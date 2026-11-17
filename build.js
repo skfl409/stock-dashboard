@@ -62,7 +62,7 @@ async function main() {
   const dash = {
     loader: (id, o) => { loaders[id] = o; },
     calc: (id, o) => { calcs[id] = o; },
-    params: () => ({ made_ov: '{}' }),
+    params: () => ({ made_ov: fs.existsSync(path.join(__dirname, 'made_overrides.json')) ? fs.readFileSync(path.join(__dirname, 'made_overrides.json'), 'utf8') : '{}' }),
   };
   vm.runInNewContext(dataScript, { dash, console, Date, Math, JSON, Promise, Object, Array, String, Number, Set, Map, encodeURIComponent });
 
@@ -95,13 +95,17 @@ async function main() {
   };
   Object.keys(calcs).forEach(get);
   // 공개 페이지에는 화면에 쓰는 결과만 넣는다 (BOM 원본·배합표·광고비·수불 원본은 제외)
-  ['bom', 'recipes', 'flow', 'fg_stock', 'pkg', 'ad_spend'].forEach((k) => { data[k] = []; });
+  // 자사 제조 체크 목록용: 상품명·제조여부·판매상태만 남김
+  const seen = new Set();
+  data.recipes = (data.recipes || []).filter((x) => !seen.has(x.상품명) && seen.add(x.상품명)).map((x) => ({ 상품명: x.상품명, 제조: x.제조, 판매상태: x.판매상태 }));
+  ['bom', 'flow', 'fg_stock', 'pkg', 'ad_spend'].forEach((k) => { data[k] = []; });
 
   const builtAt = new Date(Date.now() + 9 * 3600e3).toISOString().replace('T', ' ').slice(0, 16);
   const shim = fs.readFileSync(path.join(__dirname, 'shim.html'), 'utf8')
     .replace('__DATA__', () => JSON.stringify(data).replace(/</g, '\\u003c'))
     .replace(/__BUILT_AT__/g, builtAt);
-  const html = shim.replace('__PAGE__', () => pageWithoutData);
+  const page = pageWithoutData.split('이 화면에서는 체크 저장을 쓸 수 없습니다(기본값 적용 중).').join('웹페이지에서는 보기만 됩니다. 체크 변경은 Claude 대시보드에서 하고, 웹 반영을 요청해 주세요.');
+  const html = shim.replace('__PAGE__', () => page);
   fs.mkdirSync(path.join(__dirname, 'dist'), { recursive: true });
   fs.writeFileSync(path.join(__dirname, 'dist', 'index.html'), html);
   console.log('완료: dist/index.html', (html.length / 1024).toFixed(0) + 'KB', builtAt);
