@@ -117,12 +117,9 @@
 .rm .rm-alerts .rm-gauge { height: 8px; background: #e8eef7; }
 .rm .rm-alerts .rm-gauge > i { background: #e5484d !important; }
 .rm .rm-alerts .rm-gauge > b { display: none; }
-.rm .rm-topscroll { overflow-x: auto; overflow-y: hidden; height: 12px; margin-bottom: 4px; scrollbar-width: thin; scrollbar-color: #9cc1f5 #eef4fd; }
-.rm .rm-topscroll::-webkit-scrollbar { height: 6px; }
-.rm .rm-topscroll::-webkit-scrollbar-track { background: #eef4fd; border-radius: 3px; }
-.rm .rm-topscroll::-webkit-scrollbar-thumb { background: #9cc1f5; border-radius: 3px; }
-.rm .rm-topscroll > div { height: 1px; }
-@media (min-width: 601px) { .rm .rm-topscroll { height: 0; margin: 0; } }
+.rm .rm-topscroll { position: relative; height: 6px; margin: 2px 0 8px; background: #eef4fd; border-radius: 3px; touch-action: none; cursor: pointer; }
+.rm .rm-topscroll > div { position: absolute; top: 0; bottom: 0; left: 0; background: #9cc1f5; border-radius: 3px; min-width: 24px; }
+.rm .rm-topscroll[hidden] { display: none; }
 .rm .rm-summary { padding-left: 16px !important; padding-right: 16px !important; }
 .rm .rm-summary .rm-alertbox, .rm .rm-summary .rm-facts { padding-left: 4px !important; padding-right: 4px !important; }
 .rm .rm-summary[open] { padding-bottom: 16px !important; }
@@ -1052,18 +1049,30 @@ dash.draw('topscroll', (el) => {
   const table = document.getElementById(el.getAttribute('data-for'));
   const wrap = table && table.parentElement;
   if (!wrap) return;
-  const inner = el.firstElementChild;
+  const thumb = el.firstElementChild;
   const fit = () => {
-    inner.style.width = table.scrollWidth + 'px';
-    el.style.visibility = table.scrollWidth > wrap.clientWidth + 1 ? 'visible' : 'hidden';
+    const sw = wrap.scrollWidth, cw = wrap.clientWidth, tw = el.clientWidth || cw;
+    if (sw <= cw + 1) { el.hidden = true; return; }
+    el.hidden = false;
+    const w = Math.max(24, tw * cw / sw);
+    thumb.style.width = w + 'px';
+    thumb.style.left = ((tw - w) * wrap.scrollLeft / (sw - cw)) + 'px';
   };
   requestAnimationFrame(fit); setTimeout(fit, 300); setTimeout(fit, 1500);
   if (!el.dataset.bound) {
     el.dataset.bound = '1';
+    wrap.addEventListener('scroll', fit, { passive: true });
     if (window.ResizeObserver) { const ro = new ResizeObserver(fit); ro.observe(table); ro.observe(wrap); }
-    let lock = false;
-    el.addEventListener('scroll', () => { if (lock) return; lock = true; wrap.scrollLeft = el.scrollLeft; lock = false; });
-    wrap.addEventListener('scroll', () => { if (lock) return; lock = true; el.scrollLeft = wrap.scrollLeft; lock = false; });
+    const move = (clientX) => {
+      const r = el.getBoundingClientRect(), w = thumb.offsetWidth;
+      const ratio = Math.min(1, Math.max(0, (clientX - r.left - w / 2) / Math.max(1, r.width - w)));
+      wrap.scrollLeft = ratio * (wrap.scrollWidth - wrap.clientWidth);
+    };
+    let drag = false;
+    el.addEventListener('pointerdown', (e) => { drag = true; el.setPointerCapture(e.pointerId); move(e.clientX); });
+    el.addEventListener('pointermove', (e) => { if (drag) move(e.clientX); });
+    el.addEventListener('pointerup', () => { drag = false; });
+    el.addEventListener('pointercancel', () => { drag = false; });
   }
 });
 
