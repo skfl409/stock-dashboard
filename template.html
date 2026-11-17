@@ -107,6 +107,15 @@
 .rm .rm-band { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: calc(-1 * var(--cds-pad-sm, 6px)) calc(-1 * var(--cds-pad-sm, 6px)) 10px; padding: 8px 12px; background: #eef4fd; border: 1px solid #d6e4f5; border-radius: 999px; }
 .rm .rm-band:empty { display: none; }
 .rm .rm-alerts { gap: 14px; }
+.rm .rm-alerts .rm-card { border-left: 1px solid #e3ecf8 !important; }
+.rm .rm-alerts .rm-gauge { height: 8px; background: #e8eef7; }
+.rm .rm-alerts .rm-gauge > i { background: #e5484d !important; }
+.rm .rm-alerts .rm-gauge > b { background: #0f2a4a; }
+.rm .rm-topscroll { overflow-x: auto; overflow-y: hidden; height: 12px; margin-bottom: 4px; scrollbar-width: thin; scrollbar-color: #9cc1f5 #eef4fd; }
+.rm .rm-topscroll::-webkit-scrollbar { height: 6px; }
+.rm .rm-topscroll::-webkit-scrollbar-track { background: #eef4fd; border-radius: 3px; }
+.rm .rm-topscroll::-webkit-scrollbar-thumb { background: #9cc1f5; border-radius: 3px; }
+.rm .rm-topscroll > div { height: 1px; }
 .rm .rm-summary { padding-left: 16px !important; padding-right: 16px !important; }
 .rm .rm-summary .rm-alertbox, .rm .rm-summary .rm-facts { padding-left: 4px !important; padding-right: 4px !important; }
 .rm .rm-summary[open] { padding-bottom: 16px !important; }
@@ -259,6 +268,7 @@
       <div class="rm-panel" id="fg-panel">
         <h3 class="rm-h3">완제품 재고현황</h3>
         <p class="rm-cap">자체생산 상품. 재고일수 = 현재고 ÷ 최근 7일 일평균 출고(단위는 ERP 품목 단위).</p>
+        <div class="rm-topscroll" data-draw="topscroll" data-for="fg-table"><div></div></div>
         <div class="rm-tablewrap">
           <table class="rm-table" id="fg-table" data-source="fg_status" data-row-key="상품코드">
             <thead><tr>
@@ -276,6 +286,7 @@
       <div class="rm-panel" id="pkg-panel">
         <h3 class="rm-h3">부자재 재고현황 (포장재·부자재)</h3>
         <p class="rm-cap">넥스트고 부자재 수불 기준. 재고일수 = 현재고 ÷ 최근 7일(오늘 제외) 일평균 사용. 재고와 사용이 모두 없는 품목은 숨깁니다. 재고일수 7일 미만은 빨간색.</p>
+        <div class="rm-topscroll" data-draw="topscroll" data-for="pkg-table"><div></div></div>
         <div class="rm-tablewrap">
           <table class="rm-table" id="pkg-table" data-source="pkg_status" data-row-key="품목코드">
             <thead><tr>
@@ -1027,6 +1038,23 @@ dash.draw('pkgtable', (tb) => {
       RM.mk('td', r.재고일수 != null && r.재고일수 < 7 ? 'rm-bad' : null, r.재고일수 == null ? '—' : RM.f1(r.재고일수)));
     return tr;
   }));
+});
+
+dash.draw('topscroll', (el) => {
+  const table = document.getElementById(el.getAttribute('data-for'));
+  const wrap = table && table.parentElement;
+  if (!wrap) return;
+  const inner = el.firstElementChild;
+  requestAnimationFrame(() => {
+    inner.style.width = table.scrollWidth + 'px';
+    el.style.display = table.scrollWidth > wrap.clientWidth + 1 ? '' : 'none';
+  });
+  if (!el.dataset.bound) {
+    el.dataset.bound = '1';
+    let lock = false;
+    el.addEventListener('scroll', () => { if (lock) return; lock = true; wrap.scrollLeft = el.scrollLeft; lock = false; });
+    wrap.addEventListener('scroll', () => { if (lock) return; lock = true; el.scrollLeft = wrap.scrollLeft; lock = false; });
+  }
 });
 
 dash.draw('fgtable', (tb) => {
