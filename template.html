@@ -107,6 +107,9 @@
 .rm .rm-band { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: calc(-1 * var(--cds-pad-sm, 6px)) calc(-1 * var(--cds-pad-sm, 6px)) 10px; padding: 8px 12px; background: #eef4fd; border: 1px solid #d6e4f5; border-radius: 999px; }
 .rm .rm-band:empty { display: none; }
 .rm .rm-alerts { gap: 14px; }
+.rm .rm-summary { padding-left: 16px !important; padding-right: 16px !important; }
+.rm .rm-summary .rm-alertbox, .rm .rm-summary .rm-facts { padding-left: 4px !important; padding-right: 4px !important; }
+.rm .rm-summary[open] { padding-bottom: 16px !important; }
 .rm .rm-alerts .rm-card { padding: 16px 18px; border-radius: 14px; display: flex; flex-direction: column; gap: 12px; line-height: 1.5; }
 .rm .rm-alerts .rm-card-top { gap: 8px; align-items: center; }
 .rm .rm-alerts .rm-card-name { font-size: 1.05rem; font-weight: 700; }
