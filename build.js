@@ -77,7 +77,9 @@ async function main() {
     data[id] = out;
     console.log(id, Array.isArray(out) ? out.length + ' rows' : typeof out);
   }
-  data.ad_spend = []; // NX Ads(광고 순위)는 웹페이지 버전에 없음
+  // NX Ads 광고비(광고 순위용): GitHub 비밀값 AD_SPEND_JSON (광고세트명·광고비 행). 순위 계산에만 쓰고 페이지엔 안 넣음
+  try { data.ad_spend = process.env.AD_SPEND_JSON ? JSON.parse(process.env.AD_SPEND_JSON) : []; } catch (e) { data.ad_spend = []; }
+  console.log('ad_spend', data.ad_spend.length + ' rows');
 
   const busy = new Set();
   const get = (id) => {
@@ -92,6 +94,8 @@ async function main() {
     return v;
   };
   Object.keys(calcs).forEach(get);
+  // 공개 페이지에는 화면에 쓰는 결과만 넣는다 (BOM 원본·배합표·광고비·수불 원본은 제외)
+  ['bom', 'recipes', 'flow', 'fg_stock', 'pkg', 'ad_spend'].forEach((k) => { data[k] = []; });
 
   const builtAt = new Date(Date.now() + 9 * 3600e3).toISOString().replace('T', ' ').slice(0, 16);
   const shim = fs.readFileSync(path.join(__dirname, 'shim.html'), 'utf8')

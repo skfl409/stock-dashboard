@@ -30,6 +30,7 @@ jobs:
       - name: ERP 데이터로 페이지 만들기
         env:
           ERP_MCP_URL: ${{ secrets.ERP_MCP_URL }}
+          AD_SPEND_JSON: ${{ secrets.AD_SPEND_JSON }}
         run: node build.js
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
