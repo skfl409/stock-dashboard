@@ -1,0 +1,1032 @@
+<meta name="dash-one-writer">
+<style>
+.rm { display: flex; flex-direction: column; gap: var(--cds-gap-xl); font-family: var(--font-anthropic-sans); color: var(--color-fg); }
+.rm-title { font-family: var(--font-anthropic-serif); font-weight: 400; font-size: var(--cds-font-size-title); margin: 0 0 var(--cds-gap-sm); }
+.rm-lede { margin: 0; font-size: var(--cds-font-size-body); line-height: 1.6; }
+.rm-sub { margin: var(--cds-gap-xs) 0 0; color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); }
+.rm-h2 { font-size: var(--cds-font-size-heading); font-weight: var(--cds-font-weight-medium); margin: 0; }
+.rm-h3 { font-size: var(--cds-font-size-body); font-weight: var(--cds-font-weight-medium); margin: 0 0 var(--cds-gap-xs); }
+.rm-cap { color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); margin: var(--cds-gap-xs) 0 var(--cds-gap-md); }
+.rm-num { font-variant-numeric: tabular-nums; }
+.rm-bad { color: var(--color-bad); }
+.rm-alertbox { border: 1px solid color-mix(in srgb, var(--color-bad) 45%, var(--color-border-line)); background: color-mix(in srgb, var(--color-bad) 5%, var(--color-panel)); border-radius: var(--cds-radius); padding: var(--cds-pad-lg); }
+.rm-alerthead { display: flex; align-items: baseline; gap: var(--cds-gap-sm); flex-wrap: wrap; }
+.rm-pill { display: inline-flex; align-items: center; justify-content: center; min-width: 1.6em; padding: 0 .5em; border-radius: 999px; background: var(--color-bad); color: var(--color-bg); font-size: var(--cds-font-size-caption); font-weight: var(--cds-font-weight-medium); }
+.rm-alerts { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: var(--cds-gap-md); min-height: 120px; }
+.rm-allok { margin: 0; color: var(--color-ok); }
+.rm-card { background: var(--color-panel); border: 1px solid var(--color-border-line); border-left: 4px solid var(--color-bad); border-radius: var(--cds-radius); padding: var(--cds-pad-md); display: flex; flex-direction: column; gap: var(--cds-gap-sm); }
+.rm-card-top { display: flex; align-items: center; gap: var(--cds-gap-sm); }
+.rm-card-name { font-weight: var(--cds-font-weight-medium); font-size: var(--cds-font-size-body); margin: 0; }
+.rm-code { color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); margin-left: auto; }
+.rm-badge { display: inline-block; padding: 1px 8px; border-radius: 999px; font-size: var(--cds-font-size-caption); font-weight: var(--cds-font-weight-medium); white-space: nowrap; }
+.rm-badge.s-bad { background: color-mix(in srgb, var(--color-bad) 16%, transparent); color: var(--color-bad); }
+.rm-badge.s-ok { background: color-mix(in srgb, var(--color-ok) 14%, transparent); color: var(--color-ok); }
+.rm-big { font-family: var(--font-anthropic-serif); font-weight: 400; font-size: var(--cds-font-size-title); line-height: 1.1; font-variant-numeric: tabular-nums; }
+.rm-gauge { position: relative; height: 8px; border-radius: 4px; background: color-mix(in srgb, var(--color-fg) 8%, transparent); }
+.rm-gauge > i { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 4px; background: var(--cds-chart-status-critical); }
+.rm-gauge > b { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--color-fg); }
+.rm-dl { display: grid; grid-template-columns: auto 1fr; gap: 2px var(--cds-gap-md); margin: 0; font-size: var(--cds-font-size-caption); }
+.rm-dl dt { color: var(--color-fg-muted); }
+.rm-dl dd { margin: 0; text-align: right; font-variant-numeric: tabular-nums; }
+.rm-strong { font-weight: var(--cds-font-weight-medium); }
+.rm-muted { margin: 0; color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); }
+.rm-plist { list-style: none; margin: 0; padding: var(--cds-pad-sm) 0 0; border-top: 1px solid var(--color-border-line); display: flex; flex-direction: column; gap: 2px; font-size: var(--cds-font-size-caption); }
+.rm-plist li { display: flex; justify-content: space-between; gap: var(--cds-gap-md); font-variant-numeric: tabular-nums; }
+.rm-plist li.under { color: var(--color-bad); }
+.rm-kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: var(--cds-gap-md); }
+.rm-kpi { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: var(--cds-pad-lg); }
+.rm-kpi-label { color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); margin: 0 0 var(--cds-gap-xs); }
+.rm-kpi-val { margin: 0; }
+.rm-kpi-note { margin: var(--cds-gap-xs) 0 0; color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); }
+.rm-section { display: flex; flex-direction: column; gap: var(--cds-gap-lg); }
+.rm-panel { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: var(--cds-pad-lg); min-width: 0; }
+.rm-grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: var(--cds-gap-lg); }
+.rm-chart { position: relative; min-height: 220px; }
+.rm-chart svg { display: block; overflow: visible; }
+.rm-chart text { fill: var(--cds-text-secondary); font-size: var(--cds-font-size-caption); font-family: var(--font-anthropic-sans); }
+.rm-chart text.rm-vlab { fill: var(--color-fg); font-variant-numeric: tabular-nums; }
+.rm-tip { position: absolute; pointer-events: none; background: var(--cds-surface-popover); border: 1px solid var(--cds-border); box-shadow: var(--cds-shadow-popover); border-radius: var(--cds-radius); padding: var(--cds-pad-sm) var(--cds-pad-md); font-size: var(--cds-font-size-caption); white-space: nowrap; z-index: 5; }
+.rm-tip strong { display: block; margin-bottom: 2px; }
+.rm-tip span { color: var(--cds-text-secondary); }
+.rm-legend { display: flex; flex-wrap: wrap; gap: var(--cds-gap-md); color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); margin-bottom: var(--cds-gap-sm); }
+.rm-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.rm-sw { display: inline-block; width: 10px; height: 10px; border-radius: 2px; }
+.rm-sw.l-bad { background: var(--cds-chart-status-critical); }
+.rm-sw.l-line { height: 2px; width: 14px; border-radius: 0; }
+.rm-fail { color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); }
+.rm-tablewrap { overflow-x: auto; }
+.rm-table { width: 100%; border-collapse: collapse; font-size: var(--cds-font-size-caption); font-variant-numeric: tabular-nums; }
+.rm-table th, .rm-table td { padding: 6px 8px; border-bottom: 1px solid var(--color-border-line); text-align: right; white-space: nowrap; }
+.rm-table th { color: var(--color-fg-muted); font-weight: var(--cds-font-weight-medium); }
+.rm-table th:first-child, .rm-table td:first-child { text-align: left; position: sticky; left: 0; background: var(--color-panel); }
+.rm-table td.l, .rm-table th.l { text-align: left; }
+.rm-table tr.is-bad td:first-child { box-shadow: inset 3px 0 0 var(--color-bad); }
+.rm-table td.zero { color: var(--color-fg-muted); }
+.rm-details summary { cursor: pointer; font-weight: var(--cds-font-weight-medium); }
+.rm-details[open] summary { margin-bottom: var(--cds-gap-md); }
+.rm-method { margin: 0; padding-left: 1.2em; line-height: 1.7; font-size: var(--cds-font-size-caption); }
+[data-dash-source-state=refreshing] { opacity: .5; }
+.rm-summary summary { cursor: pointer; font-size: var(--cds-font-size-body); font-weight: var(--cds-font-weight-medium); }
+.rm-summary .rm-alertbox { margin-top: var(--cds-gap-md); }
+.rm-facts { margin: var(--cds-gap-sm) 0 0; padding-left: 1.2em; display: flex; flex-direction: column; gap: 2px; font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
+.rm-facts b { color: var(--color-fg); }
+.rm { gap: calc(var(--cds-gap-xl) * 1.4); }
+.rm-title { margin-bottom: 2px; }
+.rm-summary { margin-top: var(--cds-gap-md); border: 1px solid color-mix(in srgb, var(--color-bad) 40%, var(--color-border-line)); background: color-mix(in srgb, var(--color-bad) 4%, var(--color-panel)); border-radius: var(--cds-radius); padding: var(--cds-pad-md) var(--cds-pad-lg); }
+.rm-summary summary { cursor: pointer; display: flex; align-items: baseline; gap: 6px; list-style: none; font-weight: 400; }
+.rm-summary summary::-webkit-details-marker { display: none; }
+.rm-summary summary::before { content: '▸'; color: var(--color-bad); transition: transform .15s; display: inline-block; }
+.rm-summary[open] summary::before { transform: rotate(90deg); }
+.rm-sum-label { font-size: var(--cds-font-size-heading); font-weight: var(--cds-font-weight-medium); }
+.rm-sum-count { font-family: var(--font-anthropic-serif); font-weight: 400; font-size: var(--cds-font-size-title); color: var(--color-bad); line-height: 1; }
+.rm-sum-unit { font-size: var(--cds-font-size-heading); }
+.rm-sum-hint { margin-left: auto; color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); }
+.rm-summary[open] .rm-sum-hint { visibility: hidden; }
+.rm-summary .rm-facts { margin: var(--cds-gap-md) 0 0; padding: 0; list-style: none; flex-direction: row; flex-wrap: wrap; gap: 6px; }
+.rm-summary .rm-facts li { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: 999px; padding: 2px 10px; }
+.rm-summary .rm-alertbox { border: 0; background: none; padding: 0; }
+.rm-sechead { display: flex; align-items: center; justify-content: space-between; gap: var(--cds-gap-md); flex-wrap: wrap; }
+.rm-section > .rm-cap { margin-top: calc(var(--cds-gap-lg) * -0.6); }
+.rm-pcard .rm-big { font-size: var(--cds-font-size-heading); }
+.rm-rlist li { padding-bottom: 4px; border-bottom: 1px dashed var(--color-border-line); }
+.rm-rlist li:last-child { border-bottom: 0; }
+.rm-madelist { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 4px var(--cds-gap-md); font-size: var(--cds-font-size-caption); }
+.rm-madelist label { display: flex; align-items: center; gap: 6px; cursor: pointer; }
+.rm-madelist label.off span { color: var(--color-fg-muted); text-decoration: line-through; }
+.rm-madelist em { font-style: normal; color: var(--color-fg-muted); margin-left: auto; }
+.rm-seg { display: inline-flex; border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); overflow: hidden; align-self: flex-start; }
+.rm-seg button { font: inherit; font-size: var(--cds-font-size-caption); padding: 4px 12px; border: 0; background: var(--color-panel); color: var(--color-fg-muted); cursor: pointer; }
+.rm-seg button + button { border-left: 1px solid var(--color-border-line); }
+.rm-seg button[aria-pressed=true] { background: color-mix(in srgb, var(--color-fg) 10%, var(--color-panel)); color: var(--color-fg); font-weight: var(--cds-font-weight-medium); }
+.rm-pcards { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: var(--cds-gap-md); min-height: 120px; }
+.rm-pcard { background: var(--color-panel); border: 1px solid var(--color-border-line); border-left: 4px solid var(--color-ok); border-radius: var(--cds-radius); padding: var(--cds-pad-md); display: flex; flex-direction: column; gap: var(--cds-gap-sm); }
+.rm-pcard.is-under { border-left-color: var(--color-bad); }
+.rm-rank { color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); font-variant-numeric: tabular-nums; }
+.rm .rm-rank-box { display: inline-block; padding: 2px 9px; border-radius: 6px; background: #e3edfc; color: #1d64d8; font-weight: 700; white-space: nowrap; }
+.rm .rm-rank-box.top { background: #1d64d8; color: #fff; }
+.rm .rm-band { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: calc(-1 * var(--cds-pad-sm, 6px)) calc(-1 * var(--cds-pad-sm, 6px)) 10px; padding: 8px 12px; background: #eef4fd; border: 1px solid #d6e4f5; border-radius: 999px; }
+.rm .rm-band:empty { display: none; }
+/* 카드 UI 다듬기: 상품명이 주인공 */
+.rm .rm-pcard { padding: 18px 18px 16px; border-radius: 16px; border: 1px solid #e3ecf8; box-shadow: 0 2px 10px rgba(15,42,74,.06); transition: box-shadow .15s, transform .15s; display: flex; flex-direction: column; gap: 10px; }
+.rm .rm-pcard:hover { box-shadow: 0 6px 18px rgba(29,100,216,.12); transform: translateY(-1px); }
+.rm .rm-pcard.is-under { border-color: #f6c9cb; box-shadow: 0 2px 10px rgba(229,72,77,.08); }
+.rm .rm-band { margin: 0; padding: 5px 6px 5px 6px; background: #f3f7fd; border: 0; gap: 8px; }
+.rm .rm-band .rm-rank-box { font-size: .78rem; padding: 3px 10px; border-radius: 999px; }
+.rm .rm-band .rm-ship7 { font-size: .8rem; padding-right: 8px; }
+.rm .rm-band .rm-ship7 strong { font-size: .9rem; }
+.rm .rm-pcard .rm-card-top { display: flex; align-items: center; gap: 10px; margin: 2px 0 0; }
+.rm .rm-pcard .rm-card-name { font-size: 1.18rem; font-weight: 800; line-height: 1.3; letter-spacing: -0.02em; color: #0b1f3a; }
+.rm .rm-pcard .rm-badge { font-size: .75rem; padding: 3px 10px; font-weight: 700; flex: 0 0 auto; }
+.rm .rm-pcard .rm-badge.s-bad { background: #fde8e9; color: #c9353a; }
+.rm .rm-pcard .rm-big { font-size: 1.15rem; font-weight: 700; }
+.rm .rm-pcard .rm-muted { font-size: .8rem; }
+.rm .rm-pcard .rm-rlist { border-top: 1px dashed #e3ecf8; padding-top: 10px; font-size: .78rem; }
+.rm .rm-ship7 { margin-left: auto; color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); white-space: nowrap; }
+.rm .rm-ship7 strong { color: #0f2a4a; font-weight: 700; margin: 0 1px; }
+.rm .rm-card-name { flex: 1 1 auto; min-width: 0; word-break: keep-all; }
+.rm-rlist { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; font-size: var(--cds-font-size-caption); }
+.rm-rlist li { display: grid; grid-template-columns: 1fr auto; gap: 2px var(--cds-gap-sm); align-items: baseline; }
+.rm-rlist li.under .rm-rname, .rm-rlist li.under .rm-rcap { color: var(--color-bad); }
+.rm-rlist .rm-rcap { text-align: right; font-variant-numeric: tabular-nums; }
+.rm, .rm *, .rm-chart text { font-family: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif !important; }
+.rm { --color-bg: #ffffff; --color-panel: #ffffff; --color-fg: #0f2a4a; --color-fg-muted: #5b7290; --color-border-line: #d6e4f5; --rm-blue: #1d64d8; --rm-blue-soft: #eef4fd; background: #f5f9ff; padding: var(--cds-gap-lg); border-radius: 16px; }
+.rm .rm-panel, .rm .rm-pcard { background: #ffffff; border-color: #d6e4f5; box-shadow: 0 1px 3px rgba(29,100,216,.08); }
+.rm .rm-title, .rm .rm-h2 { color: #0b3d91; }
+.rm .rm-h2 { border-left: 5px solid var(--rm-blue); padding-left: 10px; }
+.rm .rm-h3 { color: #12407e; }
+.rm .rm-table th { background: var(--rm-blue-soft); color: #12407e; }
+.rm .rm-table tr:hover td { background: #f7faff; }
+.rm .rm-seg button[aria-pressed=true] { background: var(--rm-blue); color: #fff; }
+.rm .rm-badge.s-ok { background: var(--rm-blue-soft); color: var(--rm-blue); }
+.rm .rm-sw-0 { background: var(--rm-blue) !important; }
+.rm { --color-bad: #e5484d; --cds-radius: 8px; letter-spacing: -0.01em; }
+.rm .rm-big, .rm .rm-sum-count, .rm .rm-title { font-style: normal; }
+.rm .rm-panel, .rm .rm-pcard, .rm .rm-details { border-radius: 10px; }
+.rm .rm-summary { background: #ffffff; border: 1px solid #d6e4f5; border-left: 5px solid var(--color-bad); }
+.rm .rm-alertbox { background: #fff5f5; border-color: #fbd5d6; }
+.rm .rm-chart rect[rx] { fill: #9cc1f5 !important; }
+.rm .rm-chart path[style*="stroke-width"] { stroke: #1d64d8 !important; }
+.rm .rm-chart circle { fill: #1d64d8 !important; }
+.rm .rm-sw-1 { background: #1d64d8 !important; }
+.rm .rm-legend .rm-sw-0, .rm .rm-sw-0 { background: #9cc1f5 !important; }
+.rm a { color: var(--rm-blue); }
+.rm .rm-tip { background: #ffffff; border-color: #d6e4f5; color: #0f2a4a; }
+.rm .rm-title { font-size: 2.25rem; font-weight: 800; letter-spacing: -0.02em; line-height: 1.2; }
+.rm .rm-h2 { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.01em; }
+.rm .rm-h3 { font-size: 1.2rem; font-weight: 700; margin-bottom: var(--cds-gap-sm); }
+.rm .rm-details summary, .rm .rm-sum-label { font-weight: 700; }
+.rm .rm-big, .rm .rm-sum-count { font-weight: 700; }
+.rm-rlist .rm-rsub { grid-column: 1 / -1; color: var(--color-fg-muted); font-variant-numeric: tabular-nums; }
+.rm-rlist .rm-gauge { grid-column: 1 / -1; height: 6px; }
+.rm-rlist .rm-gauge > i { background: var(--cds-chart-status-critical); }
+.rm-rlist li:not(.under) .rm-gauge > i { background: var(--color-ok); }
+</style>
+
+<div class="rm">
+  <header id="top">
+    <h1 class="rm-title">원재료 재고알림 대시보드</h1>
+    <p class="rm-sub">넥스트고 ERP 실시간 · 재고 기준 <span data-draw="asof" data-source="raw_stock" data-field="기준시각" data-row="0">—</span></p>
+    <details class="rm-summary" id="top-summary">
+      <summary><span class="rm-sum-label">안전재고 이하 원재료</span> <b class="rm-sum-count rm-num" data-draw="nShort" data-source="summary" data-field="부족수" data-row="0">—</b><span class="rm-sum-unit">개</span><span class="rm-sum-hint">눌러서 보기</span></summary>
+      <ul class="rm-facts">
+        <li>기준량(<span class="rm-num" data-draw="base1" data-source="summary" data-field="안전재고기준_kg" data-row="0">—</span>kg) 생산 불가 상품 <b class="rm-num rm-bad" data-draw="nProdShort" data-source="summary" data-field="미달상품수" data-row="0">—</b>개</li>
+        <li>최소 생산가능 상품 <b data-draw="minProd" data-source="summary" data-field="최소상품" data-row="0">—</b> <b class="rm-num" data-draw="minKg" data-source="summary" data-field="최소생산가능_kg" data-row="0">—</b>kg</li>
+        <li>안전재고 기준 한 상품 <span class="rm-num" data-draw="base2" data-source="summary" data-field="안전재고기준_kg" data-row="0">—</span>kg 생산분</li>
+      </ul>
+      <section class="rm-alertbox" id="check-needed" aria-label="확인 필요 원재료">
+        <p class="rm-cap">카드 아래 목록은 이 원재료 재고만으로 상품별로 만들 수 있는 완제품 양이고, 기준량에 못 미치는 상품은 빨간색입니다.</p>
+        <p class="rm-allok" id="all-ok" hidden>모든 원재료가 안전재고 이상입니다.</p>
+        <div class="rm-alerts" id="alert-cards" data-draw="alerts" data-source="raw_status raw_product"></div>
+      </section>
+    </details>
+  </header>
+
+
+  <section class="rm-section" id="product-cards" aria-labelledby="product-cards-h">
+    <div class="rm-sechead">
+      <h2 class="rm-h2" id="product-cards-h">상품별 원재료 보유현황</h2>
+      <div class="rm-seg" id="pcards-filter" data-draw="pcfilter" role="group" aria-label="상품 보기 필터"></div>
+    </div>
+    <p class="rm-cap">광고비 큰 상품순 · 카드 안은 먼저 바닥나는 원재료순 · 눈금 = 기준량 · 빨강 = 기준량 미달</p>
+    <div class="rm-pcards" id="pcards" data-draw="pcards" data-source="product_cap raw_product raw_stock ship7"></div>
+  </section>
+
+  <details class="rm-panel rm-details" id="made-panel">
+    <summary>자사 제조 상품 체크</summary>
+    <p class="rm-cap">넥스트고에서 '자체제품'인 상품이 기본으로 체크됩니다. 실제로 만들지 않는 상품(사입 후 바로 출고 등)은 체크를 풀면 원재료 계산·카드·광고 순위에서 빠집니다. 바꾼 내용은 저장되어 모두에게 적용되며, 편집 권한이 있는 사람만 바꿀 수 있습니다.</p>
+    <p class="rm-muted" id="made-msg" data-draw="mademsg"></p>
+    <div class="rm-madelist" id="made-list" data-draw="madelist" data-source="recipes"></div>
+  </details>
+
+  <section class="rm-section" id="dashboard" aria-labelledby="dashboard-h">
+    <h2 class="rm-h2" id="dashboard-h">상세 지표</h2>
+
+
+    <div class="rm-panel" id="raw-table-panel">
+      <h3 class="rm-h3">원재료 재고 상세</h3>
+      <p class="rm-cap">자체생산 상품 배합에 쓰이는 원재료만 표시합니다. 안전재고 = 기준량 × 그 원재료를 가장 많이 쓰는 상품(기준 상품)의 배합비율. 예상 생산가능량 = 현재고로 기준 상품을 만들 수 있는 양.</p>
+      <div class="rm-tablewrap">
+        <table class="rm-table" id="raw-table" data-source="raw_status" data-row-key="원재료코드">
+          <thead><tr>
+            <th data-field="원재료명">원재료</th>
+            <th class="l" data-field="상태">상태</th>
+            <th data-field="현재고_kg">현재고(kg)</th>
+            <th data-field="안전재고_kg">안전재고(kg)</th>
+            <th data-field="충족률_pct">안전재고 대비</th>
+            <th data-field="부족량_kg">부족량(kg)</th>
+            <th class="l" data-field="기준상품">기준 상품</th>
+            <th data-field="생산가능_kg">예상 생산가능량(완제품 kg)</th>
+          </tr></thead>
+          <tbody data-draw="rawtable"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="rm-grid2">
+      <div class="rm-panel" id="daily-panel">
+        <h3 class="rm-h3">일별 출고량 · 생산입고 (최근 2주)</h3>
+        <p class="rm-cap">자체생산 상품 합계, kg 환산(세트 등은 BOM 중량으로)</p>
+        <div class="rm-legend"><span><i class="rm-sw rm-sw-0"></i>출고량</span><span><i class="rm-sw l-line rm-sw-1"></i>생산입고</span></div>
+        <div class="rm-chart" id="daily-chart" data-draw="dailychart" data-source="daily"></div>
+      </div>
+
+      <div class="rm-panel" id="fg-panel">
+        <h3 class="rm-h3">완제품 재고현황</h3>
+        <p class="rm-cap">자체생산 상품. 재고일수 = 현재고 ÷ 최근 7일 일평균 출고(단위는 ERP 품목 단위).</p>
+        <div class="rm-tablewrap">
+          <table class="rm-table" id="fg-table" data-source="fg_status" data-row-key="상품코드">
+            <thead><tr>
+              <th data-field="상품명">상품</th>
+              <th data-field="현재고">현재고</th>
+              <th class="l" data-field="단위">단위</th>
+              <th data-field="일평균출고">일평균 출고</th>
+              <th data-field="재고일수">재고일수</th>
+            </tr></thead>
+            <tbody data-draw="fgtable"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="rm-panel" id="pkg-panel">
+        <h3 class="rm-h3">부자재 재고현황 (포장재·부자재)</h3>
+        <p class="rm-cap">넥스트고 부자재 수불 기준. 재고일수 = 현재고 ÷ 최근 7일(오늘 제외) 일평균 사용. 재고와 사용이 모두 없는 품목은 숨깁니다. 재고일수 7일 미만은 빨간색.</p>
+        <div class="rm-tablewrap">
+          <table class="rm-table" id="pkg-table" data-source="pkg_status" data-row-key="품목코드">
+            <thead><tr>
+              <th data-field="품목명">부자재</th>
+              <th data-field="현재고">현재고</th>
+              <th class="l" data-field="단위">단위</th>
+              <th data-field="일평균사용">일평균 사용</th>
+              <th data-field="재고일수">재고일수</th>
+            </tr></thead>
+            <tbody data-draw="pkgtable"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </section>
+</div>
+
+<script>
+// ── 넥스트고 응답 → 행
+dash.loader('raw_stock', {
+  description: 'inventory_status(원재료) 응답의 items를 원재료별 행으로 펼침',
+  fn: ({ answer }) => {
+    const j = typeof answer === 'string' ? JSON.parse(answer) : answer;
+    if (!j || !Array.isArray(j.items)) throw new Error('넥스트고 재고 응답에 items가 없습니다');
+    return {
+      columns: ['원재료코드', '원재료명', '현재고', '단위', 'ERP경고', '기준시각'],
+      rows: j.items.map((i) => ({ 원재료코드: i.id, 원재료명: i.name, 현재고: i.currentQty, 단위: i.unit, ERP경고: (i.warnings || []).join(', '), 기준시각: j.asOf })),
+      cut: !!j.truncated
+    };
+  }
+});
+
+dash.loader('fg_stock', {
+  description: 'inventory_status(완제품) 응답의 items를 상품별 행으로 펼침',
+  fn: ({ answer }) => {
+    const j = typeof answer === 'string' ? JSON.parse(answer) : answer;
+    if (!j || !Array.isArray(j.items)) throw new Error('넥스트고 재고 응답에 items가 없습니다');
+    return {
+      columns: ['상품id', '상품코드', '상품명', '구분', '유형', '현재고', '단위', '공유재고'],
+      rows: j.items.map((i) => ({ 상품id: String(i.id), 상품코드: i.code, 상품명: i.name, 구분: i.group, 유형: i.productType, 현재고: i.currentQty, 단위: i.unit, 공유재고: i.sharedStock ? 'Y' : 'N' })),
+      cut: !!j.truncated
+    };
+  }
+});
+
+dash.loader('bom', {
+  description: '자체생산 완제품(공유재고 제외)마다 bom_recipe를 불러 반제품까지 펼친 원재료(RAW) 투입 행으로 만듦. 반제품배수 = 반제품 투입량 ÷ 반제품 배합 산출량(여러 단계면 곱)',
+  fn: async ({ answer, call }) => {
+    const P = (a) => (typeof a === 'string' ? JSON.parse(a) : a);
+    const j = P(answer);
+    if (!j || !Array.isArray(j.items)) throw new Error('넥스트고 재고 응답에 items가 없습니다');
+    const all = j.items.filter((i) => i.group === 'FINISHED_SELF' && !i.sharedStock);
+    // 빠르게: 용량만 다른 품목은 배합이 같으므로 대표 1개만 BOM 조회(재고 있는 것 우선). kg 아닌 단위(세트 등)는 중량 환산용으로 모두 조회
+    const SPLIT_BELOW_KG = { '모찌반죽': 2.5 };
+    const baseName = (n) => {
+      const s = String(n || ''), b = s.replace(/\s*\([^()]*\)\s*$/, '').trim() || s;
+      const kg = (s.match(/\(([\d.]+)\s*kg\)\s*$/) || [])[1];
+      return SPLIT_BELOW_KG[b] != null && kg != null && +kg < SPLIT_BELOW_KG[b] ? b + '(소용량)' : b;
+    };
+    const pick = {};
+    all.forEach((i) => { const k = baseName(i.name); if (!pick[k] || (!(+pick[k].currentQty > 0) && +i.currentQty > 0)) pick[k] = i; });
+    const prods = all.filter((i) => pick[baseName(i.name)] === i || i.unit !== 'kg');
+    const rows = [];
+    let missing = 0;
+    const walk = (recipe, mult, via, base) => {
+      (recipe.rawMaterials || []).forEach((r) => {
+        if (r.materialGroup !== 'RAW') return;
+        rows.push({ ...base, 경유반제품: via, 반제품배수: mult, 원재료코드: r.rawMaterialId, 원재료명: r.name, 투입량: r.quantity, 투입단위: r.unit, 로스율_pct: r.lossRatePct || 0 });
+      });
+      (recipe.components || []).forEach((c) => {
+        const ob = c.recipe && c.recipe.bom;
+        const out = ob ? ob.outputQty : 0;
+        const q = c.unit === 'g' && ob && ob.outputUnit === 'kg' ? c.quantity / 1000 : c.unit === 'kg' && ob && ob.outputUnit === 'g' ? c.quantity * 1000 : c.quantity;
+        if (out > 0) walk(c.recipe, mult * (q / out), c.name, base);
+      });
+    };
+    for (let k = 0; k < prods.length; k += 12) {
+      const part = prods.slice(k, k + 12);
+      const got = await Promise.all(part.map((p) => call('bom_recipe', { productId: Number(p.id), expandDepth: 3 }).then(P).catch(() => null)));
+      got.forEach((b, n) => {
+        const p = part[n];
+        if (!b || !b.bom) { missing += 1; return; }
+        const fb = b.bom;
+        const batchG = fb.batchWeightG != null ? fb.batchWeightG : fb.outputUnit === 'kg' ? fb.outputQty * 1000 : null;
+        walk(b, 1, '직접', { 상품id: String(p.id), 상품코드: p.code, 상품명: p.name, 완제품산출량: fb.outputQty, 완제품단위: fb.outputUnit, 완제품배치_g: batchG });
+      });
+    }
+    return {
+      columns: ['상품id', '상품코드', '상품명', '완제품산출량', '완제품단위', '완제품배치_g', '경유반제품', '반제품배수', '원재료코드', '원재료명', '투입량', '투입단위', '로스율_pct'],
+      rows, cut: missing > 0
+    };
+  }
+});
+
+dash.loader('flow', {
+  description: '자체생산 완제품마다 product_daily_stock_flow(최근 14일, KST)를 불러 일자·상품별 생산입고(in)·출고(out) 행으로 만듦',
+  fn: async ({ answer, call }) => {
+    const P = (a) => (typeof a === 'string' ? JSON.parse(a) : a);
+    const j = P(answer);
+    if (!j || !Array.isArray(j.items)) throw new Error('넥스트고 재고 응답에 items가 없습니다');
+    const all = j.items.filter((i) => i.group === 'FINISHED_SELF' && !i.sharedStock);
+    // 빠르게: 재고가 있는 품목은 모두, 용량 묶음 전체가 재고 0이면 대표 1개만 수불 조회(ERP 호출이 한 번에 하나씩 처리돼 호출 수가 곧 시간)
+    const SPLIT_BELOW_KG = { '모찌반죽': 2.5 };
+    const baseName = (n) => {
+      const s = String(n || ''), b = s.replace(/\s*\([^()]*\)\s*$/, '').trim() || s;
+      const kg = (s.match(/\(([\d.]+)\s*kg\)\s*$/) || [])[1];
+      return SPLIT_BELOW_KG[b] != null && kg != null && +kg < SPLIT_BELOW_KG[b] ? b + '(소용량)' : b;
+    };
+    const stocked = new Set(all.filter((i) => +i.currentQty > 0).map((i) => baseName(i.name)));
+    const rep = {};
+    const prods = all.filter((i) => {
+      if (+i.currentQty > 0) return true;
+      const k = baseName(i.name);
+      if (stocked.has(k) || rep[k]) return false;
+      rep[k] = true; return true;
+    });
+    const start = new Date(Date.now() + 9 * 3600e3 - 13 * 864e5).toISOString().slice(0, 10);
+    const rows = [];
+    let missing = 0;
+    for (let k = 0; k < prods.length; k += 12) {
+      const part = prods.slice(k, k + 12);
+      const got = await Promise.all(part.map((p) => call('product_daily_stock_flow', { itemType: 'product', itemId: String(p.id), start }).then(P).catch(() => null)));
+      got.forEach((f, n) => {
+        const p = part[n];
+        if (!f || !Array.isArray(f.days)) { missing += 1; return; }
+        f.days.forEach((d) => rows.push({ 일자: d.date, 상품id: String(p.id), 상품명: p.name, 단위: f.item ? f.item.unit : p.unit, 생산입고: d.in, 출고: d.out }));
+      });
+    }
+    return { columns: ['일자', '상품id', '상품명', '단위', '생산입고', '출고'], rows, cut: missing > 0 };
+  }
+});
+
+
+dash.loader('pkg', {
+  description: '부자재 현재고 + 품목마다 product_daily_stock_flow(raw, 최근 8일, KST)로 최근 7일 사용량(출고)을 붙임',
+  fn: async ({ answer, call }) => {
+    const P = (a) => (typeof a === 'string' ? JSON.parse(a) : a);
+    const j = P(answer);
+    if (!j || !Array.isArray(j.items)) throw new Error('넥스트고 부자재 응답에 items가 없습니다');
+    const start = new Date(Date.now() + 9 * 3600e3 - 7 * 864e5).toISOString().slice(0, 10);
+    const today = new Date(Date.now() + 9 * 3600e3).toISOString().slice(0, 10);
+    const rows = []; let missing = 0;
+    for (let k = 0; k < j.items.length; k += 12) {
+      const part = j.items.slice(k, k + 12);
+      const got = await Promise.all(part.map((p) => call('product_daily_stock_flow', { itemType: 'raw', itemId: String(p.id), start }).then(P).catch(() => null)));
+      got.forEach((f, n) => {
+        const p = part[n];
+        let out7 = null;
+        if (f && Array.isArray(f.days)) out7 = f.days.filter((d) => d.date < today).reduce((s, d) => s + (+d.use || 0) + (+d.out || 0) + (+d.dispose || 0), 0); else missing += 1;
+        rows.push({ 품목코드: p.code || p.id, 품목명: p.name, 현재고: +p.currentQty || 0, 단위: p.unit, 사용7일: out7 });
+      });
+    }
+    return { columns: ['품목코드', '품목명', '현재고', '단위', '사용7일'], rows, cut: missing > 0 || !!j.truncated };
+  }
+});
+dash.calc('pkg_status', {
+  title: '부자재 재고일수',
+  description: '부자재 현재고 ÷ 최근 7일 일평균 사용 — 재고·사용 모두 0인 품목 제외, 재고일수 짧은 순',
+  inputs: ['pkg'],
+  fn: (pkg) => (pkg || []).map((r) => {
+    const avg = r.사용7일 == null ? null : r.사용7일 / 7;
+    return { 품목코드: r.품목코드, 품목명: r.품목명, 현재고: Math.round(r.현재고), 단위: r.단위, 일평균사용: avg == null ? null : Math.round(avg * 10) / 10, 재고일수: avg > 0 ? Math.round(r.현재고 / avg * 10) / 10 : null };
+  }).filter((r) => r.현재고 !== 0 || (r.일평균사용 || 0) !== 0)
+    .sort((a, b) => (a.재고일수 == null ? 1e9 : a.재고일수) - (b.재고일수 == null ? 1e9 : b.재고일수))
+});
+
+dash.loader('ad_spend', {
+  description: 'NX Ads get_ad_performance 응답의 행(광고세트)을 광고세트명·광고비 행으로 펼침',
+  fn: ({ answer }) => {
+    const j = typeof answer === 'string' ? JSON.parse(answer) : answer;
+    const rows = (j && (j['행'] || j.rows)) || [];
+    return { columns: ['플랫폼', '캠페인', '광고세트', '광고비'], rows: rows.map((r) => ({ 플랫폼: r['플랫폼'], 캠페인: r['캠페인'], 광고세트: r['광고세트'], 광고비: +r['광고 비용'] || 0 })) };
+  }
+});
+
+// ── 상품별 광고 순위: 광고세트 이름의 상품명(앞 '000%' 떼고 괄호·_ 앞까지)을 대시보드 상품명과 맞춰 광고비 합산 → 순위만 씀
+dash.calc('ad_rank', {
+  title: '상품별 광고비 순위(최근 7일)',
+  description: '광고세트명에서 상품명을 뽑아 상품(용량 묶음)에 맞추고 광고비 합계가 큰 순으로 순위를 매김',
+  inputs: ['ad_spend', 'recipes'],
+  fn: (ad_spend, recipes) => {
+    const norm = (s) => String(s || '').replace(/\([^()]*\)/g, '').replace(/[^가-힣a-zA-Z0-9]/g, '');
+    const prods = [...new Set(recipes.filter((x) => x.제조 !== 'N').map((x) => x.상품명))].map((n) => ({ n, k: norm(n) })).filter((p) => p.k.length >= 2);
+    const sum = {};
+    ad_spend.forEach((a) => {
+      const tok = norm(String(a.광고세트 || '').replace(/^\s*\d+\s*%\s*_?\s*/, '').split(/[(_]/)[0]);
+      if (tok.length < 2) return;
+      // 광고 이름 ↔ ERP 상품명이 다른 경우(확인된 것만)
+      // null = 자사 제조품목이 아니라 원재료 체크 대상 아님(순위에서 뺌)
+      const ALIAS = {
+        '쑥인절미': '인절미쑥', '대왕호두찹쌀떡': '흰호두찹쌀떡', '쑥밤찹쌀떡': '쑥알밤찹쌀떡',
+        '동부밤찰떡': null, '콩달떡': null, '밤약밥': null, '약밥': null, '초코찹쌀떡': null, '초코찹쌀': null, '가나슈초코찹쌀떡': null, '콩설기': null
+      };
+      const key = Object.keys(ALIAS).find((a) => tok === a || tok.startsWith(a));
+      if (key && ALIAS[key] === null) return;
+      const t = key ? ALIAS[key] : tok;
+      // 1) 똑같은 이름 2) 상품명이 광고 이름 안에 들어 있으면 가장 긴 것 3) 광고 이름이 상품명 안에 있으면 가장 짧은 것
+      const hit = prods.find((p) => p.k === t || norm(p.n.replace(/[()]/g, '')) === t)
+        || prods.filter((p) => t.includes(p.k)).sort((x, y) => y.k.length - x.k.length)[0]
+        || prods.filter((p) => p.k.includes(t)).sort((x, y) => x.k.length - y.k.length)[0];
+      if (hit) sum[hit.n] = (sum[hit.n] || 0) + (+a.광고비 || 0);
+    });
+    return Object.entries(sum).filter(([, v]) => v > 0).sort((a, b) => b[1] - a[1]).map(([n], i) => ({ 상품명: n, 광고순위: i + 1 }));
+  }
+});
+
+// ── 배합비율: 완제품 1kg당 원재료 g
+dash.calc('recipes', {
+  title: '상품별 배합비율 (완제품 1kg당)',
+  description: 'BOM 투입량 × (1+로스율) × 반제품배수 ÷ 완제품 배치 중량 — 상품·원재료별 합계',
+  inputs: ['bom', 'flow'],
+  fn: (bom, flow) => {
+    const by = {};
+    bom.forEach((r) => {
+      const batchKg = (+r.완제품배치_g || 0) / 1000;
+      const g = r.투입단위 === 'g' ? +r.투입량 : r.투입단위 === 'kg' ? +r.투입량 * 1000 : null;
+      if (!batchKg || g == null) return;
+      const k = r.상품코드 + '|' + r.원재료코드;
+      by[k] = by[k] || { 상품코드: r.상품코드, 상품id: r.상품id, 상품명: r.상품명, 원재료코드: r.원재료코드, 원재료명: r.원재료명, kg당_g: 0 };
+      by[k].kg당_g += g * (1 + (+r.로스율_pct || 0) / 100) * (+r.반제품배수 || 0) / batchKg;
+    });
+    // 용량만 다른 품목은 한 상품으로 묶음: 이름 끝 괄호(용량) 제거 — 예) 초코모찌반죽 (2.5kg) = 초코모찌반죽 (10kg)
+    // 예외: 기준 용량보다 작은 소용량은 따로 봄 — 모찌반죽 0.3kg 단위(소용량) ≠ 2.5kg 단위
+    const SPLIT_BELOW_KG = { '모찌반죽': 2.5 };
+    const baseName = (n) => {
+      const s = String(n || ''), b = s.replace(/\s*\([^()]*\)\s*$/, '').trim() || s;
+      const kg = (s.match(/\(([\d.]+)\s*kg\)\s*$/) || [])[1];
+      return SPLIT_BELOW_KG[b] != null && kg != null && +kg < SPLIT_BELOW_KG[b] ? b + '(소용량)' : b;
+    };
+    const grp = {};
+    Object.values(by).filter((x) => x.kg당_g > 0).forEach((x) => {
+      const name = baseName(x.상품명), k = name + '|' + x.원재료코드;
+      if (!grp[k]) grp[k] = { 상품코드: name, 상품명: name, 원재료코드: x.원재료코드, 원재료명: x.원재료명, kg당_g: x.kg당_g, 용량수: 1 };
+      else { grp[k].kg당_g = Math.max(grp[k].kg당_g, x.kg당_g); grp[k].용량수 += 1; }
+    });
+    // 품절 간주: 최근 7일(오늘 제외) 출고가 0인 상품(용량 묶음 기준). 출고 데이터가 없으면 판단하지 않음
+    const today = flow.map((r) => r.일자).sort().pop();
+    const start = today ? new Date(Date.parse(today + 'T00:00:00Z') - 7 * 864e5).toISOString().slice(0, 10) : '';
+    const out7 = {};
+    flow.forEach((r) => { if (r.일자 >= start && r.일자 < today) { const k = baseName(r.상품명); out7[k] = (out7[k] || 0) + (+r.출고 || 0); } });
+    return Object.values(grp).map((x) => ({
+      ...x, kg당_g: Math.round(x.kg당_g * 10) / 10, 배합비율: Math.round(x.kg당_g / 10 * 100) / 100,
+      출고7일: Math.round((out7[x.상품명] || 0) * 10) / 10,
+      판매상태: !today || (out7[x.상품명] || 0) > 0 ? '판매중' : '품절',
+      // 자사 제조 여부: 넥스트고 '자체제품'이 기본. 아래 기본 제외 + 화면 체크박스(편집자 저장)가 덮어씀
+      제조: (() => {
+        let ov = {};
+        try { ov = JSON.parse(dash.params().made_ov || '{}') || {}; } catch (e) { ov = {}; }
+        if (typeof ov[x.상품명] === 'boolean') return ov[x.상품명] ? 'Y' : 'N';
+        return ['가나슈찹쌀떡', '약밥', '밤약밥'].includes(x.상품명) ? 'N' : 'Y';
+      })()
+    }));
+  }
+});
+
+// ── 원재료 × 상품: 이 원재료 재고만으로 만들 수 있는 완제품 양
+dash.calc('raw_product', {
+  title: '원재료별·상품별 생산가능량',
+  description: '원재료 현재고(kg) ÷ 완제품 1kg당 소요량 — 그 원재료만 놓고 본 상품별 최대 생산량(kg)',
+  inputs: ['raw_stock', 'recipes'],
+  fn: (raw_stock, recipes) => {
+    const kg = {};
+    raw_stock.forEach((m) => { kg[m.원재료코드] = m.단위 === 'kg' ? +m.현재고 || 0 : (+m.현재고 || 0) / 1000; });
+    return recipes.filter((x) => x.판매상태 !== '품절' && x.제조 !== 'N').map((x) => ({
+      원재료코드: x.원재료코드, 원재료명: x.원재료명, 상품코드: x.상품코드, 상품명: x.상품명, 배합비율: x.배합비율,
+      생산가능_kg: Math.round(Math.max(0, kg[x.원재료코드] || 0) / (x.kg당_g / 1000))
+    }));
+  }
+});
+
+// ── 원재료별 안전재고(어느 상품이든 한 상품 2t) · 상태
+dash.calc('raw_status', {
+  title: '원재료별 현재고 · 안전재고',
+  description: 'ERP 현재고(kg)와 안전재고(배합비율이 가장 큰 상품 기준 2t 생산분) 비교 — 배합에 쓰이는 원재료만',
+  inputs: ['raw_stock', 'recipes'],
+  fn: (raw_stock, recipes) => {
+    const SAFETY_BASE_KG = 2000; // 안전재고 기준: 어느 상품이든 한 상품 2t
+    const r1 = (v) => Math.round(v * 10) / 10;
+    return raw_stock.map((m) => {
+      const uses = recipes.filter((x) => x.원재료코드 === m.원재료코드 && x.판매상태 !== '품절' && x.제조 !== 'N');
+      if (!uses.length) return null;
+      const top = uses.reduce((a, x) => (!a || x.kg당_g > a.kg당_g ? x : a), null);
+      const ratio = top.kg당_g / 1000;
+      const stock = m.단위 === 'kg' ? +m.현재고 || 0 : (+m.현재고 || 0) / 1000;
+      const safety = SAFETY_BASE_KG * ratio;
+      return {
+        원재료코드: m.원재료코드, 원재료명: m.원재료명,
+        상태: stock < safety ? '부족' : '정상',
+        현재고_kg: r1(stock), 안전재고_kg: r1(safety),
+        충족률_pct: safety > 0 ? Math.round(stock / safety * 100) : null,
+        부족량_kg: r1(Math.max(0, safety - stock)),
+        기준상품: top.상품명, 기준배합비율: top.배합비율,
+        생산가능_kg: ratio > 0 ? Math.round(Math.max(0, stock) / ratio) : null,
+        사용상품수: uses.length, 안전재고기준_kg: SAFETY_BASE_KG
+      };
+    }).filter(Boolean).sort((a, b) => (a.상태 === b.상태 ? a.충족률_pct - b.충족률_pct : a.상태 === '부족' ? -1 : 1));
+  }
+});
+
+// ── 상품별 예상 생산가능량 (병목 원재료 기준)
+dash.calc('product_cap', {
+  title: '상품별 예상 생산가능량',
+  description: '상품에 들어가는 원재료 중 가장 먼저 바닥나는 원재료 기준의 최대 생산량(완제품 kg)',
+  inputs: ['raw_product', 'raw_status', 'ad_rank'],
+  fn: (raw_product, raw_status, ad_rank) => {
+    const rank = {};
+    (ad_rank || []).forEach((r) => { rank[r.상품명] = r.광고순위; });
+    const base = raw_status && raw_status[0] ? raw_status[0].안전재고기준_kg : 0;
+    const by = {};
+    raw_product.forEach((x) => {
+      const p = by[x.상품코드];
+      if (!p || x.생산가능_kg < p.생산가능_kg) by[x.상품코드] = { 상품코드: x.상품코드, 상품명: x.상품명, 생산가능_kg: x.생산가능_kg, 병목원재료: x.원재료명 };
+    });
+    // 광고비 큰 상품부터(광고 순위), 광고 없는 상품은 그 뒤에 생산가능량 적은 순
+    return Object.values(by).map((p) => ({ ...p, 광고순위: rank[p.상품명] || null, 기준량_kg: base, 기준충족: p.생산가능_kg >= base ? '가능' : '미달' }))
+      .sort((a, b) => (a.광고순위 || 1e9) - (b.광고순위 || 1e9) || a.생산가능_kg - b.생산가능_kg);
+  }
+});
+
+// ── 상품별 최근 7일 출고(kg)
+dash.calc('ship7', {
+  title: '상품별 최근 7일 출고량 (kg)',
+  description: '자체생산 완제품의 최근 7일(오늘 제외) 출고 합계. 용량만 다른 품목은 묶고, kg가 아닌 단위는 BOM 배치 중량으로 환산',
+  inputs: ['flow', 'bom'],
+  fn: (flow, bom) => {
+    const SPLIT_BELOW_KG = { '모찌반죽': 2.5 };
+    const baseName = (n) => {
+      const s = String(n || ''), b = s.replace(/\s*\([^()]*\)\s*$/, '').trim() || s;
+      const kg = (s.match(/\(([\d.]+)\s*kg\)\s*$/) || [])[1];
+      return SPLIT_BELOW_KG[b] != null && kg != null && +kg < SPLIT_BELOW_KG[b] ? b + '(소용량)' : b;
+    };
+    const per = {};
+    bom.forEach((r) => { if (r.완제품배치_g && r.완제품산출량) per[r.상품id] = r.완제품배치_g / 1000 / r.완제품산출량; });
+    const today = new Date(Date.now() + 9 * 3600e3).toISOString().slice(0, 10);
+    const from = new Date(Date.now() + 9 * 3600e3 - 7 * 864e5).toISOString().slice(0, 10);
+    const by = {};
+    flow.forEach((r) => {
+      if (r.일자 < from || r.일자 >= today) return;
+      const f = r.단위 === 'kg' ? 1 : per[r.상품id];
+      if (!f) return;
+      const k = baseName(r.상품명);
+      by[k] = (by[k] || 0) + (+r.출고 || 0) * f;
+    });
+    return Object.keys(by).map((k) => ({ 상품명: k, 출고7일_kg: Math.round(by[k]) }));
+  }
+});
+
+// ── 일별 생산입고·출고 (kg 환산)
+dash.calc('daily', {
+  title: '일별 생산입고 · 출고 합계 (kg)',
+  description: '자체생산 완제품의 날짜별 생산입고·출고 합계. kg가 아닌 단위(세트 등)는 BOM 배치 중량으로 환산',
+  inputs: ['flow', 'bom'],
+  fn: (flow, bom) => {
+    const per = {};
+    bom.forEach((r) => { if (r.완제품배치_g && r.완제품산출량) per[r.상품id] = r.완제품배치_g / 1000 / r.완제품산출량; });
+    const by = {};
+    flow.forEach((r) => {
+      const f = r.단위 === 'kg' ? 1 : per[r.상품id];
+      if (!f) return;
+      by[r.일자] = by[r.일자] || { 일자: r.일자, 출고량_kg: 0, 생산량_kg: 0 };
+      by[r.일자].출고량_kg += (+r.출고 || 0) * f;
+      by[r.일자].생산량_kg += (+r.생산입고 || 0) * f;
+    });
+    return Object.values(by).map((d) => ({ 일자: d.일자, 출고량_kg: Math.round(d.출고량_kg), 생산량_kg: Math.round(d.생산량_kg) }))
+      .sort((a, b) => (a.일자 < b.일자 ? -1 : 1));
+  }
+});
+
+// ── 상단 요약
+dash.calc('summary', {
+  title: '요약',
+  description: '부족 원재료 수, 기준량 미달 상품 수, 최소 생산가능 상품, 오늘 생산입고',
+  inputs: ['raw_status', 'product_cap', 'daily'],
+  fn: (raw_status, product_cap, daily) => {
+    const rows = raw_status || [], caps = product_cap || [], days = daily || [];
+    if (!rows.length) return [];
+    const last = days.length ? days[days.length - 1] : null;
+    const min = caps.reduce((a, p) => (!a || p.생산가능_kg < a.생산가능_kg ? p : a), null);
+    return [{
+      원재료수: rows.length, 부족수: rows.filter((r) => r.상태 === '부족').length,
+      상품수: caps.length, 미달상품수: caps.filter((p) => p.기준충족 === '미달').length,
+      최소상품: min ? min.상품명 : null, 최소생산가능_kg: min ? min.생산가능_kg : null, 최소상품병목: min ? min.병목원재료 : null,
+      오늘생산_kg: last ? last.생산량_kg : null, 기준일: last ? last.일자 : null,
+      안전재고기준_kg: rows[0].안전재고기준_kg
+    }];
+  }
+});
+
+// ── 완제품 재고일수
+dash.calc('fg_status', {
+  title: '완제품 재고일수',
+  description: '자체생산 완제품 현재고 ÷ 최근 7일(오늘 제외) 일평균 출고 — 단위는 ERP 품목 단위 그대로',
+  inputs: ['fg_stock', 'flow'],
+  fn: (fg_stock, flow) => {
+    const today = flow.map((r) => r.일자).sort().pop();
+    const start = today ? new Date(Date.parse(today + 'T00:00:00Z') - 7 * 864e5).toISOString().slice(0, 10) : '';
+    const sum = {};
+    flow.forEach((r) => { if (r.일자 >= start && r.일자 < today) sum[r.상품id] = (sum[r.상품id] || 0) + (+r.출고 || 0); });
+    // 용량만 다른 품목은 한 상품으로 묶어 재고·출고를 합산(단위가 같은 것끼리)
+    // 예외: 기준 용량보다 작은 소용량은 따로 봄 — 모찌반죽 0.3kg 단위(소용량) ≠ 2.5kg 단위
+    const SPLIT_BELOW_KG = { '모찌반죽': 2.5 };
+    const baseName = (n) => {
+      const s = String(n || ''), b = s.replace(/\s*\([^()]*\)\s*$/, '').trim() || s;
+      const kg = (s.match(/\(([\d.]+)\s*kg\)\s*$/) || [])[1];
+      return SPLIT_BELOW_KG[b] != null && kg != null && +kg < SPLIT_BELOW_KG[b] ? b + '(소용량)' : b;
+    };
+    const grp = {};
+    fg_stock.filter((p) => p.구분 === 'FINISHED_SELF' && p.공유재고 !== 'Y').forEach((p) => {
+      const name = baseName(p.상품명), k = name + '|' + p.단위;
+      grp[k] = grp[k] || { 상품코드: k, 상품명: name, 단위: p.단위, 현재고: 0, 출고7일: 0 };
+      grp[k].현재고 += +p.현재고 || 0;
+      grp[k].출고7일 += sum[p.상품id] || 0;
+    });
+    return Object.values(grp).map((g) => {
+      const avg = g.출고7일 / 7;
+      return { 상품코드: g.상품코드, 상품명: g.상품명, 현재고: Math.round(g.현재고 * 10) / 10, 단위: g.단위, 일평균출고: Math.round(avg * 10) / 10, 재고일수: avg > 0 ? Math.round(g.현재고 / avg * 10) / 10 : null };
+    }).sort((a, b) => (a.재고일수 == null) - (b.재고일수 == null) || a.재고일수 - b.재고일수);
+  }
+});
+</script>
+
+<script>
+window.RM = window.RM || {};
+RM.f1 = d3.format(',.1f');
+RM.f0 = d3.format(',.0f');
+RM.mk = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+RM.mark = (e, src, field, where) => { e.setAttribute('data-source', src); e.setAttribute('data-field', field); if (where) e.setAttribute('data-where', where); return e; };
+RM.loading = (el, d) => { el.classList.toggle('dash-skeleton', d.status === 'loading'); };
+RM.fail = (el, d) => { el.replaceChildren(); if (d.status === 'error') el.append(RM.mk('p', 'rm-fail', '불러오지 못했습니다')); };
+RM.tip = (el, tip, ev, lines) => {
+  tip.replaceChildren(...lines.map((l, i) => RM.mk(i === 0 ? 'strong' : 'div', null, l)));
+  tip.hidden = false;
+  const [mx, my] = d3.pointer(ev, el);
+  tip.style.left = Math.min(Math.max(0, mx + 12), el.clientWidth - tip.offsetWidth) + 'px';
+  tip.style.top = Math.max(0, my + 14) + 'px';
+};
+
+dash.onData(() => {
+  document.querySelectorAll('.rm-sw-0').forEach((e) => { e.style.background = dash.colors[0]; });
+  document.querySelectorAll('.rm-sw-1').forEach((e) => { e.style.background = dash.colors[1]; });
+  const s = dash.data('summary');
+  const ok = s.status === 'ok' && s.data && s.data[0] && s.data[0].부족수 === 0;
+  document.querySelectorAll('#all-ok').forEach((e) => { e.hidden = !ok; });
+  document.querySelectorAll('#alert-cards').forEach((e) => { e.hidden = ok; });
+});
+
+[['nShort', '부족수', RM.f0], ['base1', '안전재고기준_kg', RM.f0], ['base2', '안전재고기준_kg', RM.f0], ['nProdShort', '미달상품수', RM.f0],
+ ['minProd', '최소상품', String], ['minKg', '최소생산가능_kg', RM.f0], ['nAlert', '부족수', RM.f0], ['kShort', '부족수', RM.f0],
+ ['kTotal', '원재료수', RM.f0], ['kProd', '미달상품수', RM.f0], ['kProdTotal', '상품수', RM.f0], ['kMinKg', '최소생산가능_kg', RM.f0],
+ ['kMinProd', '최소상품', String], ['kMinRaw', '최소상품병목', String], ['kToday', '오늘생산_kg', RM.f0], ['kTodayDate', '기준일', String]
+].forEach(([name, field, fmt]) => {
+  dash.draw(name, (el) => {
+    const d = dash.data('summary');
+    RM.loading(el, d);
+    const row = d.status === 'ok' && d.data && d.data[0];
+    el.textContent = row && row[field] != null ? fmt(row[field]) : '—';
+  });
+});
+
+dash.draw('asof', (el) => {
+  const d = dash.data('raw_stock');
+  RM.loading(el, d);
+  const v = d.status === 'ok' && d.data[0] ? d.data[0].기준시각 : null;
+  el.textContent = v ? new Intl.DateTimeFormat('ko-KR', { timeZone: 'Asia/Seoul', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' }).format(new Date(v)) : '—';
+});
+
+// 확인 필요 카드
+dash.draw('alerts', (el) => {
+  const d = dash.data('raw_status'), rp = dash.data('raw_product');
+  RM.loading(el, d);
+  if (d.status !== 'ok' || !d.data) { RM.fail(el, d); return; }
+  const prodRows = rp.status === 'ok' && rp.data ? rp.data : [];
+  const txt = (t) => document.createTextNode(t);
+  el.replaceChildren(...d.data.filter((r) => r.상태 === '부족').map((r) => {
+    const w = '원재료코드=' + encodeURIComponent(r.원재료코드);
+    const span = (v, field, cls) => RM.mark(RM.mk('span', cls || 'rm-num', v), 'raw_status', field, w);
+    const card = RM.mk('article', 'rm-card');
+    card.id = 'alert-' + r.원재료코드;
+    const top = RM.mk('div', 'rm-card-top');
+    top.append(RM.mark(RM.mk('span', 'rm-badge s-bad', r.상태), 'raw_status', '상태', w),
+      RM.mark(RM.mk('h3', 'rm-card-name', r.원재료명), 'raw_status', '원재료명', w), RM.mk('span', 'rm-code', r.원재료코드));
+    const main = RM.mk('div');
+    main.append(span(RM.f1(r.현재고_kg), '현재고_kg', 'rm-big'), RM.mk('span', 'rm-muted', ' kg 현재고'));
+    const g = RM.mk('div', 'rm-gauge');
+    const fillEl = RM.mk('i'); fillEl.style.width = Math.min(100, r.충족률_pct || 0) / 1.05 + '%';
+    const tick = RM.mk('b'); tick.style.left = 100 / 1.05 + '%';
+    g.append(fillEl, tick);
+    const dl = RM.mk('dl', 'rm-dl');
+    const item = (label, parts, cls) => { const dd = RM.mk('dd', cls); dd.append(...parts); dl.append(RM.mk('dt', null, label), dd); };
+    item('안전재고', [span(RM.f1(r.안전재고_kg), '안전재고_kg'), txt(' kg ('), span(r.충족률_pct + '', '충족률_pct'), txt('%)')]);
+    item('부족량', [span(RM.f1(r.부족량_kg), '부족량_kg'), txt(' kg')], 'rm-bad rm-strong');
+    item('예상 생산가능량', [span(RM.f0(r.생산가능_kg), '생산가능_kg'), txt(' kg (완제품)')], 'rm-strong');
+    item('기준 상품', [span(r.기준상품, '기준상품', ''), txt(' · '), span(String(r.기준배합비율), '기준배합비율'), txt('%')]);
+    const list = RM.mk('ul', 'rm-plist');
+    prodRows.filter((x) => x.원재료코드 === r.원재료코드).sort((a, b) => a.생산가능_kg - b.생산가능_kg).forEach((x) => {
+      const li = RM.mk('li', x.생산가능_kg < r.안전재고기준_kg ? 'under' : null);
+      const v = RM.mk('span');
+      v.append(RM.mark(RM.mk('span', null, RM.f0(x.생산가능_kg)), 'raw_product', '생산가능_kg', w + '&상품코드=' + encodeURIComponent(x.상품코드)), txt(' kg'));
+      li.append(RM.mk('span', null, x.상품명), v);
+      list.append(li);
+    });
+    card.append(top, main, g, dl, list);
+    return card;
+  }));
+});
+
+// 자사 제조 체크: 저장은 공유 문서 settings/made {overrides: {상품명: true|false}} — 체크박스를 누를 때만 씀
+RM.madeMsg = '';
+(async () => {
+  try {
+    const db = window.claude && typeof window.claude.use === 'function' ? await window.claude.use('db') : null;
+    if (!db) { RM.madeMsg = '이 화면에서는 체크 저장을 쓸 수 없습니다(기본값 적용 중).'; dash.setParams({ made_ov: '{}' }); return; }
+    RM.madeDb = db;
+    db.doc('settings/made').onSnapshot((snap) => {
+      const d = snap && snap.exists ? snap.data() : null;
+      RM.madeOv = (d && d.overrides) || {};
+      dash.setParams({ made_ov: JSON.stringify(RM.madeOv) });
+    }, () => { RM.madeMsg = '저장된 체크를 불러오지 못했습니다(기본값 적용 중).'; });
+  } catch (e) { RM.madeMsg = '저장된 체크를 불러오지 못했습니다(기본값 적용 중).'; }
+})();
+RM.setMade = async (name, on) => {
+  if (!RM.madeDb) return;
+  const next = { ...(RM.madeOv || {}), [name]: on };
+  try { await RM.madeDb.doc('settings/made').set({ overrides: next }); }
+  catch (e) { RM.madeMsg = '저장하지 못했습니다. 편집 권한이 있는 사람만 바꿀 수 있습니다.'; dash.setParams({ made_ov: JSON.stringify(RM.madeOv || {}) }); }
+};
+
+dash.draw('mademsg', (el) => { el.textContent = RM.madeMsg || ''; });
+
+dash.draw('madelist', (el) => {
+  const d = dash.data('recipes');
+  RM.loading(el, d);
+  if (d.status !== 'ok' || !d.data) { RM.fail(el, d); return; }
+  const by = {};
+  d.data.forEach((x) => { by[x.상품명] = by[x.상품명] || { 제조: x.제조, 판매상태: x.판매상태 }; });
+  el.replaceChildren(...Object.keys(by).sort().map((name) => {
+    const p = by[name];
+    const lab = RM.mk('label', p.제조 === 'N' ? 'off' : null);
+    const cb = RM.mk('input'); cb.type = 'checkbox'; cb.checked = p.제조 !== 'N'; cb.disabled = !RM.madeDb;
+    cb.addEventListener('change', () => RM.setMade(name, cb.checked));
+    lab.append(cb, RM.mk('span', null, name), RM.mk('em', null, p.판매상태));
+    return lab;
+  }));
+});
+
+// 상품 카드 필터: 기본 '기준량 미달만'
+RM.pcAll = () => (dash.params() || {}).pc_view === 'all';
+dash.draw('pcfilter', (el) => {
+  const pc = dash.data('product_cap');
+  const rows = pc.status === 'ok' && pc.data ? pc.data : [];
+  const nUnder = rows.filter((p) => p.기준충족 === '미달').length;
+  const mkBtn = (label, all) => {
+    const b = RM.mk('button', null, label); b.type = 'button';
+    b.setAttribute('aria-pressed', String(RM.pcAll() === all));
+    b.addEventListener('click', () => dash.setParams({ pc_view: all ? 'all' : 'under' }));
+    return b;
+  };
+  el.replaceChildren(mkBtn('기준량 미달만 ' + nUnder + '개', false), mkBtn('전체 ' + rows.length + '개', true));
+});
+
+// 상품별 원재료 보유현황 카드
+dash.draw('pcards', (el) => {
+  const pc = dash.data('product_cap'), rp = dash.data('raw_product'), rs = dash.data('raw_stock');
+  RM.loading(el, pc);
+  if (pc.status !== 'ok' || !pc.data || rp.status !== 'ok' || !rp.data) { RM.fail(el, pc.status !== 'ok' ? pc : rp); return; }
+  const kg = {};
+  (rs.status === 'ok' ? rs.data : []).forEach((m) => { kg[m.원재료코드] = m.단위 === 'kg' ? +m.현재고 || 0 : (+m.현재고 || 0) / 1000; });
+  const txt = (t) => document.createTextNode(t);
+  const s7d = dash.data('ship7'), ship7 = {};
+  (s7d.status === 'ok' && Array.isArray(s7d.data) ? s7d.data : []).forEach((r) => { ship7[r.상품명] = r.출고7일_kg; });
+  const shown = RM.pcAll() ? pc.data : pc.data.filter((p) => p.기준충족 === '미달');
+  if (!shown.length) { el.replaceChildren(RM.mk('p', 'rm-allok', '기준량에 못 미치는 상품이 없습니다.')); return; }
+  el.replaceChildren(...shown.map((p) => {
+    const base = p.기준량_kg || 0, under = p.기준충족 === '미달';
+    const card = RM.mk('article', 'rm-pcard' + (under ? ' is-under' : ''));
+    card.id = 'pcard-' + p.상품코드;
+    const pw = '상품코드=' + encodeURIComponent(p.상품코드);
+    const top = RM.mk('div', 'rm-card-top');
+    const band = RM.mk('div', 'rm-band');
+    if (p.광고순위) band.append(RM.mk('span', 'rm-rank rm-rank-box' + (p.광고순위 <= 3 ? ' top' : ''), '광고 ' + p.광고순위 + '위'));
+    top.append(RM.mark(RM.mk('h3', 'rm-card-name', p.상품명), 'product_cap', '상품명', pw));
+    { const s7 = ship7[p.상품명]; const sp = RM.mk('span', 'rm-ship7'); sp.append(txt('최근 7일 주문량 '), RM.mark(RM.mk('strong', null, s7 == null ? '0' : RM.f0(s7)), 'ship7', '출고7일_kg', '상품명=' + encodeURIComponent(p.상품명)), txt('kg')); band.append(sp); }
+    top.append(
+      RM.mark(RM.mk('span', 'rm-badge ' + (under ? 's-bad' : 's-ok'), under ? '기준량 미달' : '기준량 가능'), 'product_cap', '기준충족', pw));
+    top.lastChild.style.marginLeft = 'auto';
+    const main = RM.mk('div');
+    main.append(RM.mark(RM.mk('span', 'rm-big' + (under ? ' rm-bad' : ''), RM.f0(p.생산가능_kg)), 'product_cap', '생산가능_kg', pw),
+      RM.mk('span', 'rm-muted', ' kg 생산 가능 · 병목 '), RM.mark(RM.mk('span', 'rm-strong', p.병목원재료), 'product_cap', '병목원재료', pw));
+    const list = RM.mk('ul', 'rm-rlist');
+    const max = Math.max(base * 1.5, 1);
+    rp.data.filter((x) => x.상품코드 === p.상품코드).sort((a, b) => a.생산가능_kg - b.생산가능_kg).forEach((x) => {
+      const w = '원재료코드=' + encodeURIComponent(x.원재료코드) + '&상품코드=' + encodeURIComponent(x.상품코드);
+      const li = RM.mk('li', x.생산가능_kg < base ? 'under' : null);
+      const cap = RM.mk('span', 'rm-rcap');
+      cap.append(RM.mark(RM.mk('span', null, RM.f0(x.생산가능_kg)), 'raw_product', '생산가능_kg', w), txt(' kg'));
+      const sub = RM.mk('span', 'rm-rsub', '재고 ' + RM.f1(kg[x.원재료코드] || 0) + ' kg · 배합 ' + RM.f1(x.배합비율) + '%');
+      const g = RM.mk('div', 'rm-gauge');
+      const fill = RM.mk('i'); fill.style.width = Math.min(100, x.생산가능_kg / max * 100) + '%';
+      const tick = RM.mk('b'); tick.style.left = (base / max * 100) + '%';
+      g.append(fill, tick);
+      li.append(RM.mk('span', 'rm-rname', x.원재료명), cap, g, sub);
+      list.append(li);
+    });
+    card.append(band, top, main, list);
+    return card;
+  }));
+});
+
+// 상품별 생산가능량 차트
+dash.draw('prodchart', (el) => {
+  const d = dash.data('product_cap');
+  RM.loading(el, d);
+  if (d.status !== 'ok' || !d.data) { RM.fail(el, d); return; }
+  const rows = d.data;
+  el.replaceChildren();
+  const base = rows[0] ? rows[0].기준량_kg : 0;
+  const W = Math.max(280, el.clientWidth || 600), rowH = 30, top = 20;
+  const H = top + rows.length * rowH + 6;
+  const svg = d3.select(el).append('svg').attr('width', W).attr('height', H)
+    .attr('role', 'img').attr('aria-label', '상품별 예상 생산가능량 막대 차트, 기준량 대비');
+  const ylab = svg.append('g').selectAll('text').data(rows).join('text')
+    .attr('x', 0).attr('y', (r, i) => top + i * rowH + rowH / 2).attr('dy', '0.35em').text((r) => (r.광고순위 ? r.광고순위 + '. ' : '') + r.상품명);
+  let left = 0; ylab.each(function () { left = Math.max(left, this.getComputedTextLength()); });
+  left = (left || 80) + 10;
+  const rightPad = Math.min(170, W * 0.35);
+  const x = d3.scaleLinear([0, Math.max(base * 1.6, d3.max(rows, (r) => r.생산가능_kg) * 1.02)], [left, W - rightPad]);
+  svg.append('line').attr('x1', x(base)).attr('x2', x(base)).attr('y1', top - 4).attr('y2', H)
+    .style('stroke', 'var(--cds-chart-reference)').style('stroke-dasharray', '3 3');
+  svg.append('text').attr('x', x(base)).attr('y', top - 8).attr('text-anchor', 'middle').text('기준 ' + RM.f0(base) + 'kg');
+  svg.append('line').attr('x1', left).attr('x2', left).attr('y1', top - 2).attr('y2', H).style('stroke', 'var(--cds-chart-axis)');
+  const g = svg.append('g').selectAll('g').data(rows).join('g').attr('transform', (r, i) => `translate(0,${top + i * rowH})`);
+  g.append('rect').attr('x', left).attr('y', 7).attr('height', rowH - 14).attr('rx', 2)
+    .attr('width', (r) => Math.max(1, x(r.생산가능_kg) - left))
+    .style('fill', (r) => (r.기준충족 === '미달' ? 'var(--cds-chart-status-critical)' : dash.colors[0]));
+  g.append('text').attr('class', 'rm-vlab').attr('y', rowH / 2).attr('dy', '0.35em').attr('x', (r) => x(r.생산가능_kg) + 5)
+    .text((r) => RM.f0(r.생산가능_kg) + 'kg');
+  g.append('text').attr('y', rowH / 2).attr('dy', '0.35em').attr('x', (r) => x(r.생산가능_kg) + 5)
+    .attr('dx', function () { return this.previousSibling.getComputedTextLength() + 6; })
+    .text((r) => '· ' + r.병목원재료);
+  const tip = RM.mk('div', 'rm-tip'); tip.hidden = true; el.append(tip);
+  g.append('rect').attr('x', 0).attr('y', 0).attr('width', W).attr('height', rowH).style('fill', 'transparent')
+    .on('pointerenter pointermove pointerdown', (ev, r) => RM.tip(el, tip, ev, [r.상품명 + ' · ' + r.기준충족,
+      '예상 생산가능량 ' + RM.f0(r.생산가능_kg) + ' kg', '병목 원재료 ' + r.병목원재료]))
+    .on('pointerleave', () => { tip.hidden = true; });
+});
+
+// 원재료 차트
+dash.draw('rawchart', (el) => {
+  const d = dash.data('raw_status');
+  RM.loading(el, d);
+  if (d.status !== 'ok' || !d.data) { RM.fail(el, d); return; }
+  const rows = d.data.filter((r) => r.충족률_pct != null && (+r.현재고_kg || 0) > 0).slice().sort((a, b) => a.충족률_pct - b.충족률_pct);
+  el.replaceChildren();
+  const W = Math.max(280, el.clientWidth || 600), rowH = 28, top = 20;
+  const H = top + rows.length * rowH + 6;
+  const svg = d3.select(el).append('svg').attr('width', W).attr('height', H)
+    .attr('role', 'img').attr('aria-label', '원재료별 현재고의 안전재고 대비 비율 막대 차트');
+  const ylab = svg.append('g').selectAll('text').data(rows).join('text')
+    .attr('x', 0).attr('y', (r, i) => top + i * rowH + rowH / 2).attr('dy', '0.35em').text((r) => r.원재료명);
+  let left = 0; ylab.each(function () { left = Math.max(left, this.getComputedTextLength()); });
+  left = (left || 70) + 10;
+  const cap = Math.min(400, Math.max(200, d3.max(rows, (r) => r.충족률_pct) * 1.05));
+  const x = d3.scaleLinear([0, cap], [left, W - 48]);
+  const clamp = (v) => Math.min(cap, Math.max(0, v));
+  svg.append('line').attr('x1', x(100)).attr('x2', x(100)).attr('y1', top - 4).attr('y2', H)
+    .style('stroke', 'var(--cds-chart-reference)').style('stroke-dasharray', '3 3');
+  svg.append('text').attr('x', x(100)).attr('y', top - 8).attr('text-anchor', 'middle').text('안전재고 100%');
+  svg.append('line').attr('x1', left).attr('x2', left).attr('y1', top - 2).attr('y2', H).style('stroke', 'var(--cds-chart-axis)');
+  const g = svg.append('g').selectAll('g').data(rows).join('g').attr('transform', (r, i) => `translate(0,${top + i * rowH})`);
+  g.append('rect').attr('x', left).attr('y', 6).attr('height', rowH - 12).attr('rx', 2)
+    .attr('width', (r) => Math.max(1, x(clamp(r.충족률_pct)) - left))
+    .style('fill', (r) => (r.상태 === '부족' ? 'var(--cds-chart-status-critical)' : dash.colors[0]));
+  g.append('text').attr('class', 'rm-vlab').attr('y', rowH / 2).attr('dy', '0.35em').attr('x', (r) => x(clamp(r.충족률_pct)) + 5)
+    .text((r) => r.충족률_pct + '%' + (r.충족률_pct > cap ? ' ›' : ''));
+  const tip = RM.mk('div', 'rm-tip'); tip.hidden = true; el.append(tip);
+  g.append('rect').attr('x', 0).attr('y', 0).attr('width', W).attr('height', rowH).style('fill', 'transparent')
+    .on('pointerenter pointermove pointerdown', (ev, r) => RM.tip(el, tip, ev, [r.원재료명 + ' · ' + r.상태,
+      '현재고 ' + RM.f1(r.현재고_kg) + ' kg (' + r.충족률_pct + '%)', '안전재고 ' + RM.f1(r.안전재고_kg) + ' kg · 기준 ' + r.기준상품,
+      '예상 생산가능량 ' + RM.f0(r.생산가능_kg) + ' kg (완제품)']))
+    .on('pointerleave', () => { tip.hidden = true; });
+});
+
+// 원재료 표
+dash.draw('rawtable', (tb) => {
+  const d = dash.data('raw_status');
+  if (d.status !== 'ok' || !d.data) { tb.replaceChildren(); return; }
+  tb.replaceChildren(...d.data.map((r) => {
+    const tr = RM.mk('tr', r.상태 === '부족' ? 'is-bad' : '');
+    tr.setAttribute('data-key', encodeURIComponent(r.원재료코드));
+    const st = RM.mk('td', 'l'); st.append(RM.mk('span', 'rm-badge ' + (r.상태 === '부족' ? 's-bad' : 's-ok'), r.상태));
+    tr.append(RM.mk('td', null, r.원재료명), st,
+      RM.mk('td', null, RM.f1(r.현재고_kg)), RM.mk('td', null, RM.f1(r.안전재고_kg)),
+      RM.mk('td', r.충족률_pct < 100 ? 'rm-bad' : null, r.충족률_pct == null ? '—' : r.충족률_pct + '%'),
+      RM.mk('td', r.부족량_kg ? 'rm-bad' : 'zero', RM.f1(r.부족량_kg)),
+      RM.mk('td', 'l', r.기준상품 || '—'),
+      RM.mk('td', r.상태 === '부족' ? 'rm-bad' : null, r.생산가능_kg == null ? '—' : RM.f0(r.생산가능_kg)));
+    return tr;
+  }));
+});
+
+// 일별 출고·생산 차트
+dash.draw('dailychart', (el) => {
+  const d = dash.data('daily');
+  RM.loading(el, d);
+  if (d.status !== 'ok' || !d.data) { RM.fail(el, d); return; }
+  const rows = d.data;
+  el.replaceChildren();
+  const W = Math.max(260, el.clientWidth || 500), H = 220, m = { t: 10, r: 8, b: 24 };
+  const svg = d3.select(el).append('svg').attr('width', W).attr('height', H)
+    .attr('role', 'img').attr('aria-label', '최근 2주 일별 출고량 막대와 생산입고 선 차트');
+  const ymax = d3.max(rows, (r) => Math.max(r.출고량_kg, r.생산량_kg)) || 1;
+  const y = d3.scaleLinear([0, ymax * 1.08], [H - m.b, m.t]).nice();
+  const yAxis = svg.append('g').call(d3.axisLeft(y).ticks(4).tickFormat(RM.f0).tickSize(0));
+  let lw = 0; yAxis.selectAll('text').each(function () { lw = Math.max(lw, this.getComputedTextLength()); });
+  const left = (lw || 36) + 8;
+  yAxis.attr('transform', `translate(${left - 4},0)`).select('.domain').remove();
+  const x = d3.scaleBand(rows.map((r) => r.일자), [left, W - m.r]).padding(0.25);
+  svg.insert('g', ':first-child').selectAll('line').data(y.ticks(4)).join('line')
+    .attr('x1', left).attr('x2', W - m.r).attr('y1', y).attr('y2', y).style('stroke', 'var(--cds-chart-grid)');
+  const lab = (s) => +s.slice(5, 7) + '/' + +s.slice(8, 10);
+  const every = Math.ceil(rows.length / Math.max(1, Math.floor((W - left) / 44)));
+  svg.append('g').selectAll('text').data(rows.filter((r, i) => (rows.length - 1 - i) % every === 0)).join('text')
+    .attr('x', (r) => x(r.일자) + x.bandwidth() / 2).attr('y', H - 6).attr('text-anchor', 'middle').text((r) => lab(r.일자));
+  svg.append('g').selectAll('rect').data(rows).join('rect')
+    .attr('x', (r) => x(r.일자)).attr('width', x.bandwidth()).attr('y', (r) => y(r.출고량_kg))
+    .attr('height', (r) => y(0) - y(r.출고량_kg)).attr('rx', 2).style('fill', dash.colors[0]);
+  const line = d3.line().x((r) => x(r.일자) + x.bandwidth() / 2).y((r) => y(r.생산량_kg));
+  svg.append('path').datum(rows).attr('d', line).style('fill', 'none').style('stroke', dash.colors[1]).style('stroke-width', 2);
+  svg.append('g').selectAll('circle').data(rows).join('circle')
+    .attr('cx', (r) => x(r.일자) + x.bandwidth() / 2).attr('cy', (r) => y(r.생산량_kg)).attr('r', 3).style('fill', dash.colors[1]);
+  const tip = RM.mk('div', 'rm-tip'); tip.hidden = true; el.append(tip);
+  svg.append('g').selectAll('rect').data(rows).join('rect')
+    .attr('x', (r) => x(r.일자) - x.step() * x.paddingInner() / 2).attr('width', x.step()).attr('y', m.t).attr('height', H - m.t - m.b)
+    .style('fill', 'transparent')
+    .on('pointerenter pointermove pointerdown', (ev, r) => RM.tip(el, tip, ev, [r.일자, '출고량 ' + RM.f0(r.출고량_kg) + ' kg', '생산입고 ' + RM.f0(r.생산량_kg) + ' kg']))
+    .on('pointerleave', () => { tip.hidden = true; });
+});
+
+// 완제품 표
+
+dash.draw('pkgtable', (tb) => {
+  const d = dash.data('pkg_status');
+  if (d.status !== 'ok' || !d.data) { tb.replaceChildren(); return; }
+  tb.replaceChildren(...d.data.map((r) => {
+    const tr = RM.mk('tr');
+    tr.setAttribute('data-key', encodeURIComponent(r.품목코드));
+    tr.append(RM.mk('td', null, r.품목명), RM.mk('td', null, RM.f0(r.현재고)), RM.mk('td', 'l', r.단위), RM.mk('td', null, r.일평균사용 == null ? '—' : RM.f1(r.일평균사용)),
+      RM.mk('td', r.재고일수 != null && r.재고일수 < 7 ? 'rm-bad' : null, r.재고일수 == null ? '—' : RM.f1(r.재고일수)));
+    return tr;
+  }));
+});
+
+dash.draw('fgtable', (tb) => {
+  const d = dash.data('fg_status');
+  if (d.status !== 'ok' || !d.data) { tb.replaceChildren(); return; }
+  tb.replaceChildren(...d.data.filter((r) => (+r.현재고 || 0) !== 0 || (+r.일평균출고 || 0) !== 0).map((r) => {
+    const tr = RM.mk('tr');
+    tr.setAttribute('data-key', encodeURIComponent(r.상품코드));
+    tr.append(RM.mk('td', null, r.상품명), RM.mk('td', null, RM.f1(r.현재고)), RM.mk('td', 'l', r.단위), RM.mk('td', null, RM.f1(r.일평균출고)),
+      RM.mk('td', r.재고일수 != null && r.재고일수 < 1 ? 'rm-bad' : null, r.재고일수 == null ? '—' : RM.f1(r.재고일수)));
+    return tr;
+  }));
+});
+
+// 배합비율 표
+dash.draw('recipe', (tb) => {
+  const d = dash.data('recipes');
+  if (d.status !== 'ok' || !d.data) { tb.replaceChildren(); return; }
+  const rows = d.data.slice().sort((x, y) => (x.상품명 === y.상품명 ? y.kg당_g - x.kg당_g : x.상품명 < y.상품명 ? -1 : 1));
+  tb.replaceChildren(...rows.map((r) => {
+    const tr = RM.mk('tr');
+    tr.setAttribute('data-key', encodeURIComponent(r.상품코드) + ',' + encodeURIComponent(r.원재료코드));
+    const st = RM.mk('td', 'l'); st.append(RM.mk('span', 'rm-badge ' + (r.판매상태 === '품절' ? 's-bad' : 's-ok'), r.판매상태));
+    tr.append(RM.mk('td', null, r.상품명), RM.mk('td', 'l', r.원재료명), RM.mk('td', null, RM.f1(r.kg당_g)), RM.mk('td', null, RM.f1(r.배합비율)),
+      RM.mk('td', r.출고7일 ? null : 'zero', RM.f1(r.출고7일)), st);
+    return tr;
+  }));
+});
+</script>

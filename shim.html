@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>원재료 재고알림 대시보드</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+:root {
+  --font-anthropic-sans: 'Pretendard Variable', Pretendard, -apple-system, 'Malgun Gothic', sans-serif;
+  --font-anthropic-serif: var(--font-anthropic-sans);
+  --cds-gap-xs: 4px; --cds-gap-sm: 8px; --cds-gap-md: 12px; --cds-gap-lg: 16px; --cds-gap-xl: 28px;
+  --cds-pad-sm: 8px; --cds-pad-lg: 18px; --cds-radius: 10px;
+  --cds-font-size-title: 28px; --cds-font-size-heading: 20px; --cds-font-size-body: 15px; --cds-font-size-caption: 13px;
+  --cds-font-weight-medium: 600;
+  --color-bg: #fff; --color-panel: #fff; --color-fg: #0f2a4a; --color-fg-muted: #5b7290; --color-border-line: #d6e4f5;
+  --color-bad: #e5484d; --color-good: #1d64d8; --color-warn: #d97706;
+  --cds-chart-grid: #e6eef8; --cds-chart-axis: #b8c9de; --cds-text-secondary: #5b7290;
+  --cds-surface-popover: #fff; --cds-border: #d6e4f5; --cds-shadow-popover: 0 6px 18px rgba(15,42,74,.12);
+}
+html, body { margin: 0; background: #f5f9ff; }
+.page-wrap { max-width: 1200px; margin: 0 auto; padding: 24px 16px 48px; }
+.built { text-align: right; color: #5b7290; font: 13px var(--font-anthropic-sans); margin: 0 0 8px; }
+#made-panel { display: none !important; }
+.dash-skeleton { opacity: .5; }
+.rm-tablewrap { overflow-x: auto; }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+<script>
+// 대시보드 화면 코드가 쓰는 dash 를 미리 계산된 데이터로 흉내낸다
+(function () {
+  const DATA = __DATA__;
+  const draws = {}, listeners = [];
+  let params = { pc_view: 'under', made_ov: '{}' };
+  const runAll = () => {
+    listeners.forEach((f) => { try { f(); } catch (e) { console.error(e); } });
+    Object.keys(draws).forEach((name) => document.querySelectorAll('[data-draw="' + name + '"]').forEach((el) => {
+      try { draws[name](el); } catch (e) { console.error(name, e); }
+    }));
+  };
+  window.dash = {
+    data: (id) => ({ status: 'ok', data: DATA[id] == null ? [] : DATA[id], columns: [], refreshing: false, truncated: false, meta: {} }),
+    draw: (name, fn) => { draws[name] = fn; },
+    onData: (fn) => { listeners.push(fn); },
+    params: () => params,
+    setParams: (p) => { params = Object.assign({}, params, p); runAll(); },
+    resetParams: () => { params = { pc_view: 'under', made_ov: '{}' }; runAll(); },
+    colors: ['#9cc1f5', '#1d64d8', '#0b3d91', '#5b9bf0', '#e5484d'],
+    calc: () => {}, loader: () => {}, refresh: () => {}, setLink: () => {},
+  };
+  window.addEventListener('DOMContentLoaded', () => setTimeout(runAll, 0));
+  let t; window.addEventListener('resize', () => { clearTimeout(t); t = setTimeout(runAll, 150); });
+})();
+</script>
+</head>
+<body>
+<div class="page-wrap">
+<p class="built">마지막 업데이트 __BUILT_AT__ (KST) · 1시간마다 자동 갱신</p>
+__PAGE__
+</div>
+</body>
+</html>

@@ -1,0 +1,39 @@
+name: 재고 대시보드 갱신
+
+on:
+  schedule:
+    - cron: '0 * * * *'   # 매시 정각 (UTC 기준, 1시간마다)
+  workflow_dispatch: {}    # 수동 실행 버튼
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: ERP 데이터로 페이지 만들기
+        env:
+          ERP_MCP_URL: ${{ secrets.ERP_MCP_URL }}
+        run: node build.js
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+      - id: deploy
+        uses: actions/deploy-pages@v4
