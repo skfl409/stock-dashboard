@@ -111,12 +111,13 @@
 .rm .rm-alerts .rm-card { border-left: 1px solid #e3ecf8 !important; }
 .rm .rm-alerts .rm-gauge { height: 8px; background: #e8eef7; }
 .rm .rm-alerts .rm-gauge > i { background: #e5484d !important; }
-.rm .rm-alerts .rm-gauge > b { background: #0f2a4a; }
+.rm .rm-alerts .rm-gauge > b { display: none; }
 .rm .rm-topscroll { overflow-x: auto; overflow-y: hidden; height: 12px; margin-bottom: 4px; scrollbar-width: thin; scrollbar-color: #9cc1f5 #eef4fd; }
 .rm .rm-topscroll::-webkit-scrollbar { height: 6px; }
 .rm .rm-topscroll::-webkit-scrollbar-track { background: #eef4fd; border-radius: 3px; }
 .rm .rm-topscroll::-webkit-scrollbar-thumb { background: #9cc1f5; border-radius: 3px; }
 .rm .rm-topscroll > div { height: 1px; }
+@media (min-width: 601px) { .rm .rm-topscroll { height: 0; margin: 0; } }
 .rm .rm-summary { padding-left: 16px !important; padding-right: 16px !important; }
 .rm .rm-summary .rm-alertbox, .rm .rm-summary .rm-facts { padding-left: 4px !important; padding-right: 4px !important; }
 .rm .rm-summary[open] { padding-bottom: 16px !important; }
@@ -247,6 +248,7 @@
     <div class="rm-panel" id="raw-table-panel">
       <h3 class="rm-h3">원재료 재고 상세</h3>
       <p class="rm-cap">자체생산 상품 배합에 쓰이는 원재료만 표시합니다. 안전재고 = 기준량 × 그 원재료를 가장 많이 쓰는 상품(기준 상품)의 배합비율. 예상 생산가능량 = 현재고로 기준 상품을 만들 수 있는 양.</p>
+      <div class="rm-topscroll" data-draw="topscroll" data-for="raw-table"><div></div></div>
       <div class="rm-tablewrap">
         <table class="rm-table" id="raw-table" data-source="raw_status" data-row-key="원재료코드">
           <thead><tr>
@@ -1046,12 +1048,14 @@ dash.draw('topscroll', (el) => {
   const wrap = table && table.parentElement;
   if (!wrap) return;
   const inner = el.firstElementChild;
-  requestAnimationFrame(() => {
+  const fit = () => {
     inner.style.width = table.scrollWidth + 'px';
-    el.style.display = table.scrollWidth > wrap.clientWidth + 1 ? '' : 'none';
-  });
+    el.style.visibility = table.scrollWidth > wrap.clientWidth + 1 ? 'visible' : 'hidden';
+  };
+  requestAnimationFrame(fit); setTimeout(fit, 300); setTimeout(fit, 1500);
   if (!el.dataset.bound) {
     el.dataset.bound = '1';
+    if (window.ResizeObserver) { const ro = new ResizeObserver(fit); ro.observe(table); ro.observe(wrap); }
     let lock = false;
     el.addEventListener('scroll', () => { if (lock) return; lock = true; wrap.scrollLeft = el.scrollLeft; lock = false; });
     wrap.addEventListener('scroll', () => { if (lock) return; lock = true; el.scrollLeft = wrap.scrollLeft; lock = false; });
