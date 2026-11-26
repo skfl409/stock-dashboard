@@ -17,11 +17,9 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  build-deploy:
+  # 1) ERP 데이터로 페이지를 만들어 업로드
+  build:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deploy.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -36,5 +34,22 @@ jobs:
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
+
+  # 2) 업로드가 끝난 뒤 별도 작업에서 배포 (같은 작업 안에서 바로 배포하면
+  #    GitHub가 방금 올린 파일을 아직 못 찾아 실패하는 경우가 있어 분리)
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url || steps.deploy-retry.outputs.page_url }}
+    steps:
       - id: deploy
+        uses: actions/deploy-pages@v4
+        continue-on-error: true
+      - name: 첫 배포 실패 시 30초 기다렸다가 다시 시도
+        if: steps.deploy.outcome == 'failure'
+        run: sleep 30
+      - id: deploy-retry
+        if: steps.deploy.outcome == 'failure'
         uses: actions/deploy-pages@v4
